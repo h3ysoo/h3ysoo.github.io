@@ -272,6 +272,25 @@
     .card-body p { font-size: .84rem; color: var(--ink2); line-height: 1.5; }
     .rail-hint { text-align: center; font-family: var(--mono); font-size: .68rem; color: var(--ink2); letter-spacing: .12em; text-transform: uppercase; padding-bottom: 1rem; }
 
+    /* ───────────────────────── pitch ───────────────────────── */
+    #pitch { border-top: 1px solid var(--soft); border-bottom: 1px solid var(--soft); background: var(--bg2); }
+    .pitch-inner { max-width: 1000px; margin: 0 auto; padding: clamp(4rem, 9vw, 7rem) var(--pad); text-align: center; }
+    .pitch-kicker { font-family: var(--mono); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 2rem; }
+    .pitch-text {
+      font-family: var(--serif); font-weight: 300;
+      font-size: clamp(1.5rem, 3.6vw, 2.7rem); line-height: 1.35; letter-spacing: -.01em;
+    }
+    .pitch-text em { font-style: italic; color: var(--accent); }
+    .pitch-text u {
+      text-decoration: none; background-image: linear-gradient(var(--accent), var(--accent));
+      background-size: 100% 2px; background-position: 0 96%; background-repeat: no-repeat;
+    }
+    .pitch-tags {
+      margin-top: 2.6rem; display: flex; justify-content: center; gap: 1.6rem; flex-wrap: wrap;
+      font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink2);
+    }
+    .pitch-tags i { font-style: normal; color: var(--accent); }
+
     /* ───────────────────────── stack ───────────────────────── */
     .stack-rows { border-top: 1px solid var(--soft); }
     .stack-row {
@@ -584,12 +603,26 @@
   <p class="rail-hint">← drag / scroll →</p>
 </section>
 
+<!-- ─────────────── pitch ─────────────── -->
+<section id="pitch">
+  <div class="pitch-inner reveal">
+    <p class="pitch-kicker">05 — Straight talk</p>
+    <p class="pitch-text">I'm a new grad at the start of the climb — <em>and I like it that way.</em> I'm looking for a good team and real problems: a place where I can <u>learn from people better than me</u>, earn trust by shipping, and stack experience in work and in life. Energy and work ethic come pre-installed. <em>The rest is why I'm here.</em></p>
+    <div class="pitch-tags">
+      <span><i>✳</i> learns fast</span>
+      <span><i>✳</i> shows up</span>
+      <span><i>✳</i> asks questions</span>
+      <span><i>✳</i> ships</span>
+    </div>
+  </div>
+</section>
+
 <!-- ─────────────── stack ─────────────── -->
 <section id="stack">
   <div class="wrap">
     <div class="sec-head reveal">
       <div>
-        <p class="sec-num">05 — Toolbox</p>
+        <p class="sec-num">06 — Toolbox</p>
         <h2 class="sec-title">The <em>stack</em></h2>
       </div>
       <p class="sec-note">+ CCNA: Introduction<br/>to Networks</p>
@@ -607,7 +640,7 @@
 
 <!-- ─────────────── contact ─────────────── -->
 <section id="contact">
-  <p class="contact-kicker">06 — Contact · open to opportunities</p>
+  <p class="contact-kicker">07 — Contact · open to opportunities</p>
   <h2 class="contact-title">Let's make<br/>something <em>move</em></h2>
   <a class="contact-mail" href="mailto:josef.selen@hotmail.com">josef.selen@hotmail.com</a>
   <div class="contact-links">
