@@ -116,6 +116,8 @@
     .bar3 i { display: block; height: 100%; transition: width .4s; }
     .c-ok { background: var(--hud); } .c-mid { background: var(--mid); } .c-new { background: rgba(231,236,242,.18); }
     .cat.custom { border-style: dashed; }
+    .lvlh { grid-column: 1 / -1; font-family: var(--mono); font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--sig); margin-top: 1rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line); }
+    .lvlh:first-child { margin-top: 0; }
 
     .foot { margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); }
     .foot .acts { display: flex; gap: 1rem; flex-wrap: wrap; }
@@ -349,7 +351,7 @@
    satır biçimi:  norsk | türkçe | ipucu (opsiyonel)
    isimler artikelle (en/ei/et), fiiller "å" ile, ipucunda çekimleri */
 const NO_CATS = [
-{ id:'hilsener', icon:'👋', no:'Hilsener', tr:'Selamlaşma', raw:`
+{ id:'hilsener', lvl:'A1', icon:'👋', no:'Hilsener', tr:'Selamlaşma', raw:`
 hei | merhaba
 hallo | alo / merhaba
 god morgen | günaydın
@@ -378,7 +380,7 @@ Takk for sist | Son görüşmemiz için teşekkürler
 Lykke til | Bol şans
 Skål! | Şerefe!
 `},
-{ id:'uttrykk', icon:'💬', no:'Nyttige uttrykk', tr:'Günlük kalıplar', raw:`
+{ id:'uttrykk', lvl:'A2', icon:'💬', no:'Nyttige uttrykk', tr:'Günlük kalıplar', raw:`
 Jeg forstår ikke | Anlamıyorum
 Kan du snakke litt saktere? | Biraz daha yavaş konuşabilir misin?
 Kan du gjenta? | Tekrar eder misin?
@@ -409,7 +411,7 @@ Gratulerer med dagen! | Doğum günün kutlu olsun!
 Hvor mye koster det? | Bu ne kadar?
 Jeg vil gjerne ha ... | ... almak isterim
 `},
-{ id:'pronomen', icon:'🧑', no:'Pronomen', tr:'Zamirler', raw:`
+{ id:'pronomen', lvl:'A1', icon:'🧑', no:'Pronomen', tr:'Zamirler', raw:`
 jeg | ben
 du | sen
 han | o (erkek)
@@ -436,7 +438,7 @@ noen | biri / birileri
 ingen | hiç kimse
 alle | herkes
 `},
-{ id:'sporreord', icon:'❓', no:'Spørreord og småord', tr:'Soru ve bağlaç kelimeleri', raw:`
+{ id:'sporreord', lvl:'A1', icon:'❓', no:'Spørreord og småord', tr:'Soru ve bağlaç kelimeleri', raw:`
 hva | ne
 hvem | kim
 hvor | nerede / nereye
@@ -468,7 +470,7 @@ sammen | birlikte
 alene | yalnız
 ikke | değil
 `},
-{ id:'preposisjoner', icon:'📍', no:'Preposisjoner', tr:'Edatlar', raw:`
+{ id:'preposisjoner', lvl:'A2', icon:'📍', no:'Preposisjoner', tr:'Edatlar', raw:`
 i | içinde
 på | üstünde / -de
 under | altında
@@ -492,7 +494,7 @@ rundt | etrafında
 utenfor | dışında
 innenfor | içinde (sınır)
 `},
-{ id:'tall', icon:'🔢', no:'Tall', tr:'Sayılar', raw:`
+{ id:'tall', lvl:'A1', icon:'🔢', no:'Tall', tr:'Sayılar', raw:`
 null | sıfır
 en / ett | bir
 to | iki
@@ -528,7 +530,7 @@ første | birinci
 andre | ikinci
 tredje | üçüncü
 `},
-{ id:'tid', icon:'⏰', no:'Tid', tr:'Zaman', raw:`
+{ id:'tid', lvl:'A1', icon:'⏰', no:'Tid', tr:'Zaman', raw:`
 i dag | bugün
 i morgen | yarın
 i går | dün
@@ -558,7 +560,7 @@ kvart over to | ikiyi çeyrek geçiyor
 kvart på tre | üçe çeyrek var
 ti over fem | beşi on geçiyor
 `},
-{ id:'dager', icon:'📅', no:'Dager og måneder', tr:'Günler ve aylar', raw:`
+{ id:'dager', lvl:'A1', icon:'📅', no:'Dager og måneder', tr:'Günler ve aylar', raw:`
 mandag | Pazartesi
 tirsdag | Salı
 onsdag | Çarşamba
@@ -583,7 +585,7 @@ en sommer | yaz
 en høst | sonbahar
 en vinter | kış
 `},
-{ id:'familie', icon:'👨‍👩‍👧', no:'Familie', tr:'Aile', raw:`
+{ id:'familie', lvl:'A1', icon:'👨‍👩‍👧', no:'Familie', tr:'Aile', raw:`
 en familie | aile
 ei mor | anne | en/ei mor
 en far | baba
@@ -613,7 +615,7 @@ gift | evli
 skilt | boşanmış
 singel | bekar
 `},
-{ id:'kropp', icon:'🫀', no:'Kroppen', tr:'Vücut', raw:`
+{ id:'kropp', lvl:'A1', icon:'🫀', no:'Kroppen', tr:'Vücut', raw:`
 et hode | baş / kafa
 et hår | saç
 et ansikt | yüz
@@ -639,7 +641,7 @@ et blod | kan
 Jeg har vondt i hodet | Başım ağrıyor
 Jeg er syk | Hastayım
 `},
-{ id:'mat', icon:'🍞', no:'Mat og drikke', tr:'Yiyecek ve içecek', raw:`
+{ id:'mat', lvl:'A1', icon:'🍞', no:'Mat og drikke', tr:'Yiyecek ve içecek', raw:`
 et brød | ekmek
 en ost | peynir
 et smør | tereyağı
@@ -676,7 +678,7 @@ sulten | aç
 tørst | susamış
 Det smaker godt | Tadı güzel
 `},
-{ id:'hjem', icon:'🏠', no:'Hjemme', tr:'Ev', raw:`
+{ id:'hjem', lvl:'A1', icon:'🏠', no:'Hjemme', tr:'Ev', raw:`
 et hus | ev
 en leilighet | daire
 et rom | oda
@@ -705,7 +707,7 @@ et gulv | zemin
 et tak | çatı / tavan
 en vegg | duvar
 `},
-{ id:'klaer', icon:'🧥', no:'Klær', tr:'Giysiler', raw:`
+{ id:'klaer', lvl:'A1', icon:'🧥', no:'Klær', tr:'Giysiler', raw:`
 klær | giysiler
 en genser | kazak
 ei skjorte | gömlek | en/ei skjorte
@@ -730,7 +732,7 @@ ei regnjakke | yağmurluk | en/ei regnjakke
 å ta på seg | giymek
 å kle av seg | soyunmak
 `},
-{ id:'farger', icon:'🎨', no:'Farger', tr:'Renkler', raw:`
+{ id:'farger', lvl:'A1', icon:'🎨', no:'Farger', tr:'Renkler', raw:`
 rød | kırmızı
 blå | mavi
 grønn | yeşil
@@ -750,7 +752,7 @@ lyseblå | açık mavi
 gull | altın
 sølv | gümüş
 `},
-{ id:'vaer', icon:'🌦️', no:'Vær og natur', tr:'Hava ve doğa', raw:`
+{ id:'vaer', lvl:'A2', icon:'🌦️', no:'Vær og natur', tr:'Hava ve doğa', raw:`
 et vær | hava (durumu)
 en sol | güneş
 et regn | yağmur
@@ -777,7 +779,7 @@ en himmel | gökyüzü
 ei stjerne | yıldız | en/ei stjerne
 en måne | ay (gök cismi)
 `},
-{ id:'by', icon:'🏙️', no:'Byen', tr:'Şehir ve yerler', raw:`
+{ id:'by', lvl:'A2', icon:'🏙️', no:'Byen', tr:'Şehir ve yerler', raw:`
 en by | şehir
 et sentrum | merkez
 en butikk | dükkan
@@ -803,7 +805,7 @@ en frisør | kuaför / berber
 et kjøpesenter | alışveriş merkezi
 en gate | cadde / sokak
 `},
-{ id:'reise', icon:'🚆', no:'Reise og transport', tr:'Seyahat ve ulaşım', raw:`
+{ id:'reise', lvl:'A2', icon:'🚆', no:'Reise og transport', tr:'Seyahat ve ulaşım', raw:`
 en bil | araba
 en buss | otobüs
 et tog | tren
@@ -833,7 +835,7 @@ en avgang | kalkış
 en ankomst | varış
 forsinket | gecikmeli
 `},
-{ id:'jobb', icon:'💼', no:'Jobb og skole', tr:'İş ve okul', raw:`
+{ id:'jobb', lvl:'A2', icon:'💼', no:'Jobb og skole', tr:'İş ve okul', raw:`
 en jobb | iş
 et arbeid | iş / çalışma
 en arbeidsplass | işyeri
@@ -863,7 +865,7 @@ ledig | boş / açık (pozisyon)
 arbeidsledig | işsiz
 å søke på en jobb | işe başvurmak
 `},
-{ id:'fritid', icon:'⛷️', no:'Fritid og sport', tr:'Boş zaman ve spor', raw:`
+{ id:'fritid', lvl:'A2', icon:'⛷️', no:'Fritid og sport', tr:'Boş zaman ve spor', raw:`
 fritid | boş zaman
 en hobby | hobi
 å gå på ski | kayak yapmak
@@ -890,7 +892,7 @@ en tur | gezi / yürüyüş
 å slappe av | dinlenmek
 en drone | drone
 `},
-{ id:'verb', icon:'🏃', no:'Viktige verb', tr:'Temel fiiller', raw:`
+{ id:'verb', lvl:'A2', icon:'🏃', no:'Viktige verb', tr:'Temel fiiller', raw:`
 å være | olmak | er · var · har vært
 å ha | sahip olmak | har · hadde · har hatt
 å gjøre | yapmak | gjør · gjorde · har gjort
@@ -940,7 +942,7 @@ en drone | drone
 å huske | hatırlamak | husker · husket · har husket
 å vaske | yıkamak | vasker · vasket · har vasket
 `},
-{ id:'adjektiv', icon:'⚖️', no:'Adjektiv', tr:'Sıfatlar', raw:`
+{ id:'adjektiv', lvl:'A2', icon:'⚖️', no:'Adjektiv', tr:'Sıfatlar', raw:`
 stor | büyük
 liten | küçük
 ny | yeni
@@ -981,7 +983,7 @@ feil | yanlış
 åpen | açık
 stengt | kapalı
 `},
-{ id:'folelser', icon:'💛', no:'Følelser og personlighet', tr:'Duygular ve kişilik', raw:`
+{ id:'folelser', lvl:'B1', icon:'💛', no:'Følelser og personlighet', tr:'Duygular ve kişilik', raw:`
 glad | mutlu
 trist | üzgün
 lei seg | üzgün (kırgın)
@@ -1009,6 +1011,519 @@ sjenert | utangaç
 modig | cesur
 Jeg savner deg | Seni özledim
 Jeg elsker deg | Seni seviyorum
+`},
+{ id:'setninger', lvl:'B1', icon:'🗣️', no:'Nyttige setninger', tr:'Kalıp cümleler', raw:`
+Det kommer an på | Duruma bağlı
+Etter min mening | Bence / Bana göre
+Jeg synes at ... | Bence ...
+Jeg er ikke sikker | Emin değilim
+Hva mener du? | Ne demek istiyorsun?
+Det var ikke meningen | Kasıtlı değildi
+Jeg mente det ikke sånn | Öyle demek istemedim
+Kan du forklare det? | Açıklayabilir misin?
+Jeg er helt enig | Tamamen katılıyorum
+Der er jeg uenig | Orada sana katılmıyorum
+Det høres bra ut | Kulağa iyi geliyor
+Det gir mening | Mantıklı
+Det gir ingen mening | Hiç mantıklı değil
+Jeg har lyst til å ... | ... yapmak istiyorum (canım istiyor)
+Jeg har ikke tid | Vaktim yok
+Har du tid til en kaffe? | Bir kahveye vaktin var mı?
+Jeg må dessverre gå | Maalesef gitmem lazım
+Beklager at jeg er sen | Geç kaldığım için özür dilerim
+Det er ikke så farlig | O kadar önemli değil
+Du har rett | Haklısın
+Jeg tok feil | Yanılmışım
+La oss se | Bakalım
+Jeg kommer tilbake til deg | Sana dönüş yaparım
+Kan vi ta det senere? | Sonra konuşabilir miyiz?
+Det tviler jeg på | Bundan şüpheliyim
+Hva synes du? | Sen ne düşünüyorsun?
+Hvis jeg ikke tar feil | Yanılmıyorsam
+Det var hyggelig å snakke med deg | Seninle konuşmak güzeldi
+Ha det gøy! | İyi eğlenceler!
+Gratulerer! | Tebrikler!
+God bedring! | Geçmiş olsun!
+Hils fra meg | Benden selam söyle
+Takk for hjelpen | Yardımın için teşekkürler
+Det setter jeg pris på | Bunu takdir ediyorum
+Kan jeg få regningen? | Hesabı alabilir miyim?
+Kunne du ha hjulpet meg? | Bana yardım edebilir misin? (kibar)
+Jeg skal bare ... | Sadece ... yapacağım
+Det er lenge siden sist | Görüşmeyeli uzun zaman oldu
+`},
+{ id:'muntlig', lvl:'B1', icon:'😎', no:'Muntlige uttrykk', tr:'Konuşma dili ve argo', raw:`
+digg | harika / lezzetli (konuşma dili)
+kult | havalı
+kjipt | berbat / can sıkıcı
+sykt | aşırı / çok (argo) | sykt bra = aşırı iyi
+skikkelig | gerçekten / iyice
+kjempebra | süper / çok iyi
+dritbra | aşırı iyi (argo)
+Fett! | Süper! (argo)
+Jaså? | Öyle mi?
+Ikke sant? | Değil mi?
+Akkurat! | Aynen! / Tam olarak!
+Nettopp | Aynen / az önce
+Sånn er det bare | Durum bu, ne yapalım
+Det funker | Çalışıyor / İşe yarıyor
+Null stress | Hiç sorun değil / Kafana takma
+Æsj! | İğrenç! / Iyy!
+Oi! | Vay! / Oha!
+Hæ? | Ha? / Ne?
+Hva skjer? | Naber? / Ne oluyor?
+Lenge siden! | Uzun zaman oldu!
+Det er det samme | Fark etmez / Aynı şey
+Gidder ikke | Üşeniyorum / Canım istemiyor | å gidde
+Jeg orker ikke | Takatim yok / Kaldıramıyorum | å orke
+Herregud! | Aman Tanrım!
+Pokker! | Kahretsin!
+Min feil | Benim hatam
+Skjerp deg! | Kendine gel! / Toparlan!
+Kom igjen! | Hadi! / Haydi!
+Det ordner seg | Hallolur / Düzelir
+Bare hyggelig | Ne demek, rica ederim
+Snakkes! | Konuşuruz!
+Ses! | Görüşürüz!
+Takk i like måte | Sana da / Size de
+Hvordan går det? | Nasıl gidiyor?
+Jeg er helt ferdig | Bittim / Çok yorgunum
+Så kjekt! | Ne güzel!
+Typisk! | Tam beklendiği gibi! / Tipik!
+Uff da | Of ya / Hay aksi
+Ja vel | Peki / Anladım
+Gjerne det | Memnuniyetle
+`},
+{ id:'bindeord', lvl:'B1', icon:'🔗', no:'Bindeord og tekstord', tr:'Bağlaçlar ve metin kelimeleri', raw:`
+derfor | bu yüzden
+likevel | yine de
+dessuten | üstelik / ayrıca
+i tillegg | buna ek olarak
+imidlertid | ancak / bununla birlikte
+ifølge | -e göre
+for eksempel | örneğin
+blant annet | diğerlerinin yanı sıra
+med andre ord | başka bir deyişle
+på den ene siden | bir yandan
+på den andre siden | öte yandan
+selv om | -e rağmen / -se bile
+mens | iken
+ettersom | -dığı için
+dersom | eğer (resmi)
+slik at | böylece / öyle ki
+for at | -sın diye
+til tross for | -e rağmen
+uansett | ne olursa olsun
+etter hvert | zamanla
+egentlig | aslında
+faktisk | gerçekten / aslında
+nemlig | çünkü / yani (açıklama)
+altså | yani
+i det hele tatt | genel olarak / hiç
+først og fremst | her şeyden önce
+til slutt | sonunda
+for det første | ilk olarak
+i motsetning til | -in aksine
+når det gjelder | ... konusunda
+på grunn av | ... yüzünden / nedeniyle
+dermed | böylece
+ellers | aksi halde / bunun dışında
+enten ... eller | ya ... ya da
+verken ... eller | ne ... ne de
+både ... og | hem ... hem de
+jo ... desto | ne kadar ... o kadar | jo mer, desto bedre
+kort sagt | kısacası
+i hvert fall | en azından / her halükarda
+`},
+{ id:'partikkelverb', lvl:'B1', icon:'🧩', no:'Partikkelverb', tr:'Edatlı fiiller', raw:`
+å gi opp | vazgeçmek
+å finne ut | öğrenmek / çözmek
+å se fram til | dört gözle beklemek
+å ta vare på | ilgilenmek / korumak / bakmak
+å legge merke til | fark etmek
+å komme overens | anlaşmak / geçinmek | komme overens med noen
+å holde på med | ile meşgul olmak
+å sette pris på | takdir etmek / değer vermek
+å gå ut på | ... hakkında olmak / amaçlamak | Hva går det ut på?
+å ta opp | gündeme getirmek / kaydetmek
+å slå opp | ayrılmak (sevgili) / sözlükte bakmak
+å komme fram | varmak / ortaya çıkmak
+å sette opp | kurmak / ayarlamak
+å legge til | eklemek
+å ta over | devralmak
+å skru på | açmak (cihaz)
+å skru av | kapatmak (cihaz)
+å stå opp | kalkmak (yataktan)
+å legge seg | yatmak (uyumak için)
+å kle på seg | giyinmek
+å rydde opp | toparlamak / ortalığı toplamak
+å kaste bort | boşa harcamak
+å henge med | takılmak / takip edebilmek
+å finne på | uydurmak / bir şey yapmayı akıl etmek
+å gå over | geçmek (ağrı vs.)
+å slippe unna | yakayı sıyırmak
+å bli kvitt | bir şeyden kurtulmak
+å ta igjen | yetişmek / telafi etmek
+å se ut | görünmek (dış görünüş)
+å komme på | aklına gelmek
+å ta seg sammen | kendini toparlamak
+å gjøre det slutt | ilişkiyi bitirmek
+å regne med | güvenmek / hesaba katmak
+å be om | rica etmek / istemek
+å passe på | dikkat etmek / göz kulak olmak
+å ha lyst på | canı çekmek
+å glede seg til | ... için sabırsızlanmak
+å bry seg om | önemsemek / umursamak
+`},
+{ id:'helse', lvl:'B1', icon:'🩺', no:'Helse', tr:'Sağlık', raw:`
+en fastlege | aile hekimi
+en legevakt | acil poliklinik / nöbetçi doktor
+en resept | reçete
+en medisin | ilaç
+en smerte | ağrı
+feber | ateş | en feber
+en hoste | öksürük
+en forkjølelse | soğuk algınlığı
+en influensa | grip
+en allergi | alerji
+en skade | yaralanma / hasar
+et brudd | kırık
+en operasjon | ameliyat
+en sykepleier | hemşire
+en ambulanse | ambulans
+en blodprøve | kan tahlili
+en vaksine | aşı
+svimmel | başı dönen
+kvalm | midesi bulanan
+å kaste opp | kusmak
+å puste | nefes almak
+å hvile | dinlenmek
+å bli frisk | iyileşmek
+psykisk helse | ruh sağlığı
+utbrent | tükenmiş (burnout)
+Jeg har vondt i magen | Midem ağrıyor
+Jeg må bestille time | Randevu almam lazım
+Det gjør vondt | Acıyor
+`},
+{ id:'penger', lvl:'B1', icon:'💰', no:'Økonomi og penger', tr:'Para ve ekonomi', raw:`
+en krone | kron
+en regning | fatura / hesap
+en kvittering | fiş / makbuz
+et lån | kredi / borç
+et boliglån | konut kredisi
+en rente | faiz
+en sparekonto | tasarruf hesabı
+å spare | biriktirmek / tasarruf etmek
+å bruke penger | para harcamak
+å låne | ödünç almak / vermek
+en gjeld | borç
+en pris | fiyat
+et tilbud | indirim / teklif
+et salg | satış / indirim sezonu
+en husleie | kira
+et depositum | depozito
+en inntekt | gelir
+en utgift | gider
+å betale med kort | kartla ödemek
+å vippse | Vipps ile para göndermek | Kan jeg vippse deg?
+en aksje | hisse senedi
+et fond | fon
+en forsikring | sigorta
+en skattemelding | vergi beyannamesi
+Det er gratis | Bedava
+Hvor mye blir det? | Ne kadar tutuyor?
+`},
+{ id:'friluftsliv', lvl:'B1', icon:'🏔️', no:'Friluftsliv', tr:'Doğa ve açık hava yaşamı', raw:`
+friluftsliv | açık hava yaşamı / doğada vakit geçirmek
+allemannsretten | herkesin doğada dolaşma hakkı
+en fjelltur | dağ yürüyüşü
+en topptur | zirve tırmanışı
+en sti | patika
+ei løype | kayak / koşu parkuru | en/ei løype
+en ryggsekk | sırt çantası
+et telt | çadır
+en sovepose | uyku tulumu
+et bål | kamp ateşi
+å grille | mangal yapmak
+en matpakke | beslenme paketi (sandviç)
+en termos | termos
+en isbre | buzul
+et nordlys | kuzey ışıkları
+en midnattssol | gece yarısı güneşi
+en foss | şelale
+ei myr | bataklık | en/ei myr
+en bekk | dere
+en elg | Avrasya geyiği (mus)
+et reinsdyr | ren geyiği
+en ulv | kurt
+en bjørn | ayı
+en måke | martı
+en mygg | sivrisinek
+Ut på tur, aldri sur | Yürüyüşe çık, asla somurtma (Norveç sözü)
+Det finnes ikke dårlig vær, bare dårlige klær | Kötü hava yoktur, kötü kıyafet vardır
+`},
+{ id:'teknologi', lvl:'B1', icon:'💻', no:'Teknologi og data', tr:'Teknoloji ve bilişim', raw:`
+en datamaskin | bilgisayar
+en bærbar PC | dizüstü bilgisayar
+et tastatur | klavye
+en skjerm | ekran
+en lader | şarj aleti
+en app | uygulama
+en nettside | web sitesi
+en database | veritabanı
+en server | sunucu
+et passord | şifre
+en bruker | kullanıcı
+å logge inn | giriş yapmak
+å laste ned | indirmek
+å laste opp | yüklemek
+å lagre | kaydetmek
+å slette | silmek
+å oppdatere | güncellemek
+en feil | hata / bug
+å feilsøke | hata ayıklamak
+en utvikler | geliştirici
+å programmere | programlamak
+en kode | kod
+kunstig intelligens | yapay zeka
+en innstilling | ayar
+en lenke | bağlantı / link
+et vedlegg | ek (e-posta)
+å dele skjermen | ekran paylaşmak
+trådløst nett | kablosuz ağ / wifi
+datasikkerhet | bilgi güvenliği
+`},
+{ id:'arbeidsliv', lvl:'B2', icon:'📈', no:'Arbeidsliv og karriere', tr:'İş hayatı ve kariyer', raw:`
+en stilling | pozisyon
+en arbeidsgiver | işveren
+en arbeidstaker | çalışan / işçi
+en arbeidskontrakt | iş sözleşmesi
+en prøvetid | deneme süresi
+en oppsigelse | işten çıkarma / istifa
+å si opp | istifa etmek / işten çıkarmak
+en forfremmelse | terfi
+en lønnsforhandling | maaş görüşmesi
+en kompetanse | yetkinlik
+en kvalifikasjon | nitelik
+et ansvarsområde | sorumluluk alanı
+en arbeidsoppgave | iş görevi
+et prosjekt | proje
+en kunde | müşteri
+en leverandør | tedarikçi
+et samarbeid | işbirliği
+en arbeidstid | çalışma saatleri
+overtid | fazla mesai
+en sykemelding | hastalık raporu
+en permisjon | izin (uzun süreli)
+en pensjon | emeklilik / emekli maaşı
+en fagforening | sendika
+en referanse | referans
+å ansette | işe almak
+å lede | yönetmek / liderlik etmek
+å delegere | yetki devretmek
+å prioritere | önceliklendirmek
+et hjemmekontor | evden çalışma
+en medarbeider | çalışma arkadaşı / personel
+en medarbeidersamtale | performans görüşmesi
+et styre | yönetim kurulu
+en leder | yönetici / lider
+`},
+{ id:'avverb', lvl:'B2', icon:'🚀', no:'Avanserte verb', tr:'İleri seviye fiiller', raw:`
+å anta | varsaymak | antar · antok · har antatt
+å påstå | iddia etmek | påstår · påsto · har påstått
+å oppnå | elde etmek / başarmak | oppnår · oppnådde · har oppnådd
+å utvikle | geliştirmek | utvikler · utviklet · har utviklet
+å gjennomføre | gerçekleştirmek / uygulamak | gjennomfører · gjennomførte · har gjennomført
+å vurdere | değerlendirmek | vurderer · vurderte · har vurdert
+å forbedre | iyileştirmek | forbedrer · forbedret · har forbedret
+å redusere | azaltmak | reduserer · reduserte · har redusert
+å øke | artırmak / artmak | øker · økte · har økt
+å påvirke | etkilemek | påvirker · påvirket · har påvirket
+å forårsake | sebep olmak | forårsaker · forårsaket · har forårsaket
+å unngå | kaçınmak | unngår · unngikk · har unngått
+å innrømme | itiraf etmek / kabul etmek | innrømmer · innrømmet · har innrømmet
+å overbevise | ikna etmek | overbeviser · overbeviste · har overbevist
+å foreslå | önermek | foreslår · foreslo · har foreslått
+å bestemme seg | karar vermek | bestemmer · bestemte · har bestemt
+å oppdage | keşfetmek / fark etmek | oppdager · oppdaget · har oppdaget
+å etablere | kurmak / tesis etmek | etablerer · etablerte · har etablert
+å tilpasse seg | uyum sağlamak | tilpasser · tilpasset · har tilpasset
+å sammenligne | karşılaştırmak | sammenligner · sammenlignet · har sammenlignet
+å understreke | vurgulamak | understreker · understreket · har understreket
+å kreve | talep etmek / gerektirmek | krever · krevde · har krevd
+å tilby | teklif etmek / sunmak | tilbyr · tilbød · har tilbudt
+å beholde | elde tutmak / korumak | beholder · beholdt · har beholdt
+å utsette | ertelemek | utsetter · utsatte · har utsatt
+å forhandle | müzakere etmek / pazarlık etmek | forhandler · forhandlet · har forhandlet
+å bidra | katkıda bulunmak | bidrar · bidro · har bidratt
+å erstatte | yerine koymak / tazmin etmek | erstatter · erstattet · har erstattet
+å avgjøre | karara bağlamak | avgjør · avgjorde · har avgjort
+å fremheve | öne çıkarmak | fremhever · fremhevet · har fremhevet
+å nøle | tereddüt etmek | nøler · nølte · har nølt
+å klage | şikayet etmek | klager · klaget · har klaget
+å gruble | kafa yormak / derin düşünmek | grubler · grublet · har grublet
+å angre | pişman olmak | angrer · angret · har angret
+å stole på | güvenmek | stoler · stolte · har stolt
+å tåle | dayanmak / tahammül etmek | tåler · tålte · har tålt
+å behandle | davranmak / tedavi etmek | behandler · behandlet · har behandlet
+å forsvinne | kaybolmak | forsvinner · forsvant · har forsvunnet
+å oppføre seg | davranmak | oppfører · oppførte · har oppført
+å utnytte | yararlanmak / sömürmek | utnytter · utnyttet · har utnyttet
+å dra nytte av | faydalanmak | drar · dro · har dratt
+`},
+{ id:'avadj', lvl:'B2', icon:'💎', no:'Avanserte adjektiv', tr:'İleri seviye sıfatlar', raw:`
+nødvendig | gerekli
+tilgjengelig | erişilebilir / mevcut
+pålitelig | güvenilir
+bærekraftig | sürdürülebilir
+omfattende | kapsamlı
+betydelig | kayda değer / önemli ölçüde
+tydelig | açık / net
+utfordrende | zorlayıcı
+spennende | heyecan verici
+imponerende | etkileyici
+bekymret | endişeli
+avslappet | rahat
+selvstendig | bağımsız
+ansvarlig | sorumlu
+nysgjerrig | meraklı
+tålmodig | sabırlı
+utålmodig | sabırsız
+sta | inatçı
+grundig | titiz / derinlemesine
+overfladisk | yüzeysel
+tilfeldig | rastgele / tesadüfi
+vanlig | yaygın / normal
+uvanlig | alışılmadık
+merkelig | tuhaf
+forsiktig | dikkatli / temkinli
+fornuftig | mantıklı / makul
+rettferdig | adil
+urettferdig | adaletsiz
+effektiv | verimli
+vellykket | başarılı
+mislykket | başarısız
+sjelden | nadir
+hyppig | sık
+midlertidig | geçici
+permanent | kalıcı
+enestående | eşsiz
+behagelig | rahat / hoş
+ubehagelig | rahatsız edici / hoş olmayan
+likegyldig | kayıtsız / umursamaz
+misunnelig | haset / kıskanç
+ydmyk | alçakgönüllü
+arrogant | kibirli
+`},
+{ id:'abstrakt', lvl:'B2', icon:'🧠', no:'Abstrakte ord', tr:'Soyut kavramlar', raw:`
+en mulighet | imkan / olasılık
+en utfordring | zorluk / meydan okuma
+en løsning | çözüm
+en årsak | sebep
+en konsekvens | sonuç (etki)
+en fordel | avantaj
+en ulempe | dezavantaj
+en forskjell | fark
+en sammenheng | bağlam / ilişki
+et inntrykk | izlenim
+en holdning | tutum
+en fordom | önyargı
+tillit | güven | en tillit
+et ansvar | sorumluluk
+frihet | özgürlük | en frihet
+kunnskap | bilgi (birikim) | en kunnskap
+en hensikt | amaç / niyet
+et mål | hedef
+en innsats | çaba
+en framgang | ilerleme
+en tilbakemelding | geri bildirim
+en beslutning | karar
+et samfunn | toplum
+en utvikling | gelişme
+en hendelse | olay
+en tilstand | durum / hal
+en oppfatning | görüş / algı
+en tvil | şüphe
+en hemmelighet | sır
+et minne | anı / hatıra
+en drøm | rüya / hayal
+en vane | alışkanlık
+en evne | yetenek / kabiliyet
+et forhold | ilişki
+et kompromiss | uzlaşma
+en grense | sınır
+et perspektiv | bakış açısı
+en verdi | değer
+`},
+{ id:'samfunn', lvl:'B2', icon:'🏛️', no:'Samfunn og politikk', tr:'Toplum ve politika', raw:`
+en regjering | hükümet
+Stortinget | Norveç parlamentosu
+en statsminister | başbakan
+et valg | seçim / tercih
+å stemme | oy vermek
+et parti | parti
+en kommune | belediye
+et fylke | il / bölge
+en lov | kanun
+en rettighet | hak
+en plikt | görev / yükümlülük
+en skatt | vergi
+en velferdsstat | refah devleti
+NAV | Çalışma ve Refah İdaresi | Arbeids- og velferdsforvaltningen
+et statsborgerskap | vatandaşlık
+en innvandrer | göçmen
+integrering | entegrasyon / uyum
+et mangfold | çeşitlilik
+et demokrati | demokrasi
+ytringsfrihet | ifade özgürlüğü
+en domstol | mahkeme
+en dugnad | imece (gönüllü ortak çalışma)
+en frivillig | gönüllü
+en organisasjon | kuruluş / dernek
+en debatt | tartışma
+arbeidsledighet | işsizlik
+et budsjett | bütçe
+en kritikk | eleştiri
+en undersøkelse | araştırma / anket
+miljøvern | çevre koruma
+klimaendringer | iklim değişiklikleri
+likestilling | eşitlik (cinsiyet)
+`},
+{ id:'idiomer', lvl:'B2', icon:'🦉', no:'Idiomer og ordtak', tr:'Deyimler ve atasözleri', raw:`
+Det er ikke min kopp te | Bu bana göre değil
+å ha is i magen | soğukkanlı olmak | "midede buz olmak"
+å slå to fluer i en smekk | bir taşla iki kuş vurmak
+å ta seg vann over hodet | boyundan büyük işe kalkışmak
+å ha bein i nesa | kararlı ve cesur olmak | "burnunda kemik olmak"
+å snakke rett fra levra | dobra dobra konuşmak | "ciğerden konuşmak"
+Det koster skjorta | Çok pahalı | "gömleğe mal olur"
+å passe som hånd i hanske | tıpatıp uymak
+å legge seg langflat | boyun eğip tamamen özür dilemek
+å få kalde føtter | son anda korkup caymak
+å ha mange baller i lufta | aynı anda birçok işle uğraşmak
+å kaste perler for svin | kıymet bilmeyene emek vermek
+å ikke se skogen for bare trær | ayrıntılardan bütünü görememek
+å være i sjuende himmel | yedinci kat göklerde olmak
+å ta det med en klype salt | ihtiyatla karşılamak
+Det er hipp som happ | Ha o ha bu / Fark etmez
+å henge med i svingene | gidişata ayak uydurmak
+å ha en finger med i spillet | işin içinde parmağı olmak
+å skjære alle over én kam | herkesi aynı kefeye koymak
+å gå som katten rundt den varme grøten | lafı dolandırmak
+Det er ugler i mosen | Bu işte bir bit yeniği var
+å få noe inn med morsmelka | bir şeyi küçükken kapmak | "anne sütüyle almak"
+å være på bærtur | tamamen yanılmak / yoldan çıkmak
+å bite i det sure eplet | acı gerçeği kabullenmek
+å holde tunga rett i munnen | dikkatli olmak / konsantre olmak
+å ha sommerfugler i magen | midesinde kelebekler uçuşmak
+å ta beina fatt | yola koyulmak (yürüyerek)
+Det var dråpen som fikk begeret til å renne over | Bardağı taşıran son damla oldu
+Ting tar tid | Her şey zaman alır
+Borte bra, men hjemme best | Gezmek güzel ama en iyisi ev
+Den som venter på noe godt, venter ikke forgjeves | Sabreden derviş muradına ermiş
+Øvelse gjør mester | Pratik mükemmelleştirir
+Det er ingen sak | Çok kolay / Hiç sorun değil
+Nå er det slutt på moroa | Şaka bitti / Eğlence bitti
 `},
 ];
 const RU_CATS = [
@@ -1705,7 +2220,10 @@ const midnight = () => { const d=new Date(); d.setHours(0,0,0,0); return d.getTi
 const sfx = () => S.lang === 'no' ? '' : '_' + S.lang;      // dil başına ayrı alanlar (norveççe eski anahtarları korur)
 const myWords = () => (S['custom'+sfx()] ||= []);
 const myDay = () => (S['day'+sfx()] ||= { d:null, n:0 });
-const allCats = () => [...LG().cats, { ...CUSTOM, no:LG().custom }];
+const LVL_ORDER = { A1:1, A2:2, B1:3, B2:4 };
+const LVL_NAME = { A1:'A1 · Temel', A2:'A2 · Temel+', B1:'B1 · Orta seviye', B2:'B2 · İleri seviye', mine:'Kendi kelimelerin' };
+const allCats = () => [...[...LG().cats].sort((a,b) => (LVL_ORDER[a.lvl]||0) - (LVL_ORDER[b.lvl]||0)), { ...CUSTOM, no:LG().custom }];
+const lvlOf = c => c && (c.custom ? 'mine' : c.lvl);
 const catById = id => allCats().find(c => c.id === id);
 const wordsOf = c => c.custom ? myWords().map(w => [w.no, w.tr, w.hint || '']) : c.words;
 const cardsOf = c => wordsOf(c).map(([no,tr,hint]) => ({ id:LG().prefix+c.id+'|'+no, no, tr, hint:hint||'', cat:c.id }));
@@ -1829,9 +2347,10 @@ function renderHome(){
   $('#qDailySub').textContent = all.due + nNew
     ? `${all.due} tekrar · ${nNew} yeni kelime`
     : 'Bugünlük hepsi tamam ✓ Yarın yeni kartlar gelecek';
-  $('#grid').innerHTML = allCats().map(c => {
+  $('#grid').innerHTML = allCats().map((c, i, all) => {
     const k = counts(cardsOf(c));
-    return `<button class="cat ${c.custom?'custom':''}" data-cat="${c.id}">
+    const head = lvlOf(c) && lvlOf(c) !== lvlOf(all[i-1]) ? `<div class="lvlh">${LVL_NAME[lvlOf(c)]}</div>` : '';
+    return head + `<button class="cat ${c.custom?'custom':''}" data-cat="${c.id}">
       ${k.due ? `<span class="due">${k.due} tekrar</span>` : ''}
       <span class="ic">${c.icon}</span>
       <span class="cn" lang="${LG().hl}">${c.no}</span>
@@ -1944,7 +2463,7 @@ function renderCard(c){
   $('#stage').innerHTML = `
     <div class="scene"><div class="flip" id="flip">
       <div class="face front">${front}<span class="tap">çevirmek için tıkla · space</span></div>
-      <div class="face back">${back}</div>
+      <div class="face back">${back}<span class="tap">geri çevirmek için tıkla · space</span></div>
     </div></div>
     <button class="btn flipbtn" id="flipBtn">Cevabı göster</button>
     <div class="rate" id="rate" hidden>
@@ -1959,10 +2478,10 @@ function nextLabel(c){
   return d === 1 ? 'yarın' : d < 30 ? d + ' gün' : Math.round(d/30) + ' ay';
 }
 function flip(){
-  const f = $('#flip'); if (!f || f.classList.contains('on')) return;
-  f.classList.add('on');
+  const f = $('#flip'); if (!f) return;
+  const on = f.classList.toggle('on');
   $('#flipBtn').hidden = true; $('#rate').hidden = false;
-  const c = sess.q[0]; if (S.auto && c.rev) speak(c.no);
+  const c = sess.q[0]; if (S.auto && on === c.rev) speak(c.no);
 }
 
 function renderQuiz(c){
@@ -2167,7 +2686,8 @@ document.addEventListener('keydown', e => {
   const c = sess.q[0];
   if (sess.mode === 'card'){
     const on = $('#flip') && $('#flip').classList.contains('on');
-    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); if (!on) flip(); return; }
+    if (e.key === ' '){ e.preventDefault(); flip(); return; }
+    if (e.key === 'Enter'){ e.preventDefault(); if (!on) flip(); return; }
     if (on && ['1','2','3'].includes(e.key)) return answer(+e.key - 1);
     if (e.key === 's' || e.key === 'S') return speak(c.no);
   } else if (sess.mode === 'quiz'){
