@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Norsk Ord</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:   #06070a;
+      --deep:   #090b11;
+      --panel:  #0c0f17;
+      --panel2: #121724;
+      --ink:    #e7ecf2;
+      --ink2:   #7c8699;
+      --hud:    #4de3c8;
+      --hud-dim:rgba(77,227,200,.18);
+      --sig:    #ff5a1f;
+      --sig-dim:rgba(255,90,31,.16);
+      --ok:     #4de38a;
+      --mid:    #ffc53d;
+      --bad:    #ff4d6a;
+      --line:   rgba(231,236,242,.10);
+      --disp:   'Chakra Petch', sans-serif;
+      --sans:   'Space Grotesk', sans-serif;
+      --mono:   'IBM Plex Mono', monospace;
+      --pad:    clamp(1rem, 3.5vw, 2.4rem);
+      --cut:    polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--sans); background: var(--void); color: var(--ink);
+      line-height: 1.5; min-height: 100vh; overflow-x: hidden;
+      background-image:
+        radial-gradient(1100px 560px at 85% -10%, rgba(255,90,31,.09), transparent 60%),
+        radial-gradient(900px 640px at 0% 100%, rgba(77,227,200,.06), transparent 55%);
+      background-attachment: fixed;
+    }
+    ::selection { background: var(--sig); color: var(--void); }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    [hidden] { display: none !important; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--pad); }
+
+    /* ── top bar ── */
+    header {
+      position: sticky; top: 0; z-index: 20; height: 58px;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0 var(--pad); border-bottom: 1px solid var(--line);
+      background: rgba(6,7,10,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .brand { font-family: var(--disp); font-weight: 700; font-size: 1rem; letter-spacing: .06em; display: flex; align-items: center; gap: .55ch; white-space: nowrap; }
+    .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sig); box-shadow: 0 0 10px var(--sig); }
+    .brand span { color: var(--hud); }
+    .tools { display: flex; align-items: center; gap: .5rem; }
+    .seg { display: flex; border: 1px solid var(--line); }
+    .seg button { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; padding: .45rem .6rem; color: var(--ink2); transition: .15s; }
+    .seg button.on { background: var(--hud-dim); color: var(--hud); }
+    .seg button:hover:not(.on) { color: var(--ink); }
+    .ibtn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); color: var(--ink2); transition: .15s; font-size: .95rem; }
+    .ibtn:hover { color: var(--hud); border-color: var(--hud-dim); }
+    .ibtn.on { color: var(--hud); border-color: var(--hud); }
+
+    /* ── labels ── */
+    .stag { font-family: var(--mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--hud); display: flex; align-items: center; gap: .7ch; margin-bottom: .8rem; }
+    .stag::before { content: ''; width: 24px; height: 1px; background: var(--hud); }
+    .h1 { font-family: var(--disp); font-weight: 700; text-transform: uppercase; line-height: .95; font-size: clamp(2.1rem, 6vw, 3.6rem); letter-spacing: -.01em; }
+    .h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 1.5px var(--sig); }
+
+    /* ── home ── */
+    #home { padding-top: clamp(1.8rem, 5vw, 3.2rem); padding-bottom: 3rem; }
+    .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+    .hero p.sub { color: var(--ink2); margin-top: .8rem; max-width: 46ch; font-size: .95rem; }
+
+    .stats { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); background: var(--deep); margin-bottom: 1rem; }
+    .stat { padding: 1.1rem 1rem; border-right: 1px solid var(--line); position: relative; }
+    .stat:last-child { border-right: 0; }
+    .stat b { font-family: var(--disp); font-weight: 700; font-size: clamp(1.5rem, 3.4vw, 2.1rem); line-height: 1; display: block; }
+    .stat span { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); display: block; margin-top: .5rem; }
+    .stat::before { content: ''; position: absolute; top: 7px; left: 7px; width: 7px; height: 7px; border-top: 1px solid var(--hud); border-left: 1px solid var(--hud); }
+    .stat .gbar { height: 3px; background: var(--line); margin-top: .6rem; }
+    .stat .gbar i { display: block; height: 100%; background: var(--sig); transition: width .4s; }
+
+    .quick { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; margin-bottom: 2.4rem; }
+    .qcard { border: 1px solid var(--line); background: var(--panel); padding: 1.3rem 1.4rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; text-align: left; transition: .2s; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+    .qcard:hover { border-color: var(--hud); transform: translateY(-2px); }
+    .qcard.main { background: linear-gradient(120deg, rgba(255,90,31,.16), rgba(255,90,31,.03) 70%), var(--panel); border-color: rgba(255,90,31,.4); }
+    .qcard.main:hover { border-color: var(--sig); box-shadow: 0 10px 40px var(--sig-dim); }
+    .qcard .qt { font-family: var(--disp); font-weight: 600; text-transform: uppercase; font-size: 1.25rem; letter-spacing: .01em; }
+    .qcard .qs { color: var(--ink2); font-size: .85rem; margin-top: .2rem; }
+    .qcard .qn { font-family: var(--disp); font-weight: 700; font-size: 2.2rem; color: var(--sig); line-height: 1; }
+    .qcard:not(.main) .qn { color: var(--hud); font-size: 1.6rem; }
+
+    .ghead { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 1rem; }
+    .ghead .legend { display: flex; gap: 1rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); flex-wrap: wrap; }
+    .legend i { display: inline-block; width: 8px; height: 8px; margin-right: .4ch; vertical-align: 0; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .9rem; }
+    .cat { position: relative; border: 1px solid var(--line); background: var(--panel); padding: 1.1rem 1.15rem 1rem; text-align: left; display: flex; flex-direction: column; gap: .35rem; transition: .2s; }
+    .cat:hover { border-color: var(--hud); background: var(--panel2); transform: translateY(-2px); }
+    .cat .ic { font-size: 1.5rem; line-height: 1; margin-bottom: .3rem; }
+    .cat .cn { font-family: var(--disp); font-weight: 600; font-size: 1.12rem; text-transform: uppercase; letter-spacing: .01em; line-height: 1.15; }
+    .cat .ct { color: var(--ink2); font-size: .84rem; }
+    .cat .cm { font-family: var(--mono); font-size: .62rem; color: var(--ink2); letter-spacing: .06em; margin-top: .4rem; display: flex; justify-content: space-between; }
+    .cat .due { position: absolute; top: .9rem; right: .9rem; font-family: var(--mono); font-size: .62rem; padding: .15rem .45rem; background: var(--sig-dim); color: var(--sig); border: 1px solid rgba(255,90,31,.35); }
+    .bar3 { display: flex; height: 4px; background: var(--line); margin-top: .2rem; overflow: hidden; }
+    .bar3 i { display: block; height: 100%; transition: width .4s; }
+    .c-ok { background: var(--hud); } .c-mid { background: var(--mid); } .c-new { background: rgba(231,236,242,.18); }
+    .cat.custom { border-style: dashed; }
+
+    .foot { margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); }
+    .foot .acts { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .foot button, .foot a { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); }
+    .foot button:hover, .foot a:hover { color: var(--hud); }
+    .keys { color: var(--ink2); }
+    kbd { font-family: var(--mono); font-size: .6rem; border: 1px solid var(--line); border-bottom-width: 2px; padding: 0 .35rem; color: var(--ink); }
+
+    /* ── buttons ── */
+    .btn { font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; padding: .8rem 1.2rem; border: 1px solid var(--line); background: rgba(255,255,255,.02); transition: .15s; display: inline-flex; align-items: center; justify-content: center; gap: .6ch; clip-path: var(--cut); }
+    .btn:hover { border-color: var(--hud); color: var(--hud); }
+    .btn.sig { background: var(--sig); border-color: var(--sig); color: var(--void); font-weight: 500; }
+    .btn.sig:hover { color: var(--void); box-shadow: 0 6px 24px var(--sig-dim); transform: translateY(-1px); }
+
+    /* ── modal ── */
+    .modal { position: fixed; inset: 0; z-index: 50; background: rgba(3,4,6,.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: grid; place-items: center; padding: 1rem; }
+    .sheet { width: min(460px, 100%); background: var(--panel); border: 1px solid var(--hud-dim); padding: 1.5rem; position: relative; box-shadow: 0 40px 100px rgba(0,0,0,.6); animation: pop .18s ease-out; }
+    @keyframes pop { from { transform: translateY(10px); opacity: 0; } }
+    .sheet .x { position: absolute; top: .8rem; right: .8rem; }
+    .sheet .ic { font-size: 2rem; }
+    .sheet h3 { font-family: var(--disp); font-weight: 700; text-transform: uppercase; font-size: 1.5rem; line-height: 1.1; margin-top: .4rem; }
+    .sheet .ct { color: var(--ink2); font-size: .9rem; }
+    .sheet .bar3 { margin: 1rem 0 .4rem; height: 5px; }
+    .sheet .cm { font-family: var(--mono); font-size: .64rem; color: var(--ink2); letter-spacing: .06em; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .modes { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1.3rem; }
+    .mode { border: 1px solid var(--line); padding: .9rem; text-align: left; transition: .15s; background: var(--deep); }
+    .mode:hover { border-color: var(--hud); }
+    .mode b { font-family: var(--disp); font-weight: 600; text-transform: uppercase; font-size: 1rem; display: flex; align-items: center; gap: .5ch; }
+    .mode span { color: var(--ink2); font-size: .78rem; display: block; margin-top: .15rem; }
+    .mode.prim { border-color: rgba(255,90,31,.45); background: linear-gradient(120deg, rgba(255,90,31,.14), transparent 75%), var(--deep); }
+    .mode.prim:hover { border-color: var(--sig); }
+
+    /* ── study ── */
+    #study { padding-top: 1.2rem; padding-bottom: 3rem; }
+    .shead { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }
+    .shead .tt { flex: 1; min-width: 0; }
+    .shead .tt b { font-family: var(--disp); font-weight: 600; text-transform: uppercase; font-size: 1.05rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .shead .tt span { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); }
+    .prog { height: 3px; background: var(--line); margin-top: .5rem; }
+    .prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--hud), var(--sig)); transition: width .3s; }
+    .cnt { font-family: var(--mono); font-size: .75rem; color: var(--ink2); white-space: nowrap; }
+    .cnt b { color: var(--ink); font-weight: 500; }
+
+    .stage { max-width: 680px; margin: 0 auto; }
+    .scene { perspective: 1400px; }
+    .flip { position: relative; height: clamp(270px, 46vh, 400px); transform-style: preserve-3d; transition: transform .5s cubic-bezier(.3,.8,.3,1); cursor: pointer; }
+    .flip.on { transform: rotateY(180deg); }
+    .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem 1.4rem; clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px)); }
+    .face.back { transform: rotateY(180deg); background: linear-gradient(160deg, rgba(77,227,200,.07), transparent 60%), var(--panel2); border-color: var(--hud-dim); }
+    .face .lang { position: absolute; top: 1rem; left: 1.2rem; font-family: var(--mono); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--hud); }
+    .face .st { position: absolute; top: 1rem; right: 1.4rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); }
+    .word { font-family: var(--disp); font-weight: 600; font-size: clamp(1.8rem, 6.5vw, 3.2rem); line-height: 1.1; overflow-wrap: anywhere; }
+    .word.long { font-size: clamp(1.4rem, 4.6vw, 2.2rem); }
+    .ask { color: var(--ink2); font-size: 1rem; margin-bottom: .6rem; }
+    .hint { font-family: var(--mono); font-size: .8rem; color: var(--ink2); margin-top: .9rem; }
+    .tap { position: absolute; bottom: 1rem; left: 0; right: 0; font-family: var(--mono); font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); opacity: .7; }
+    .say { margin-top: 1rem; width: 42px; height: 42px; border: 1px solid var(--hud-dim); color: var(--hud); display: grid; place-items: center; font-size: 1.1rem; transition: .15s; }
+    .say:hover { background: var(--hud-dim); }
+
+    .rate { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-top: 1rem; }
+    .rbtn { padding: .9rem .5rem; border: 1px solid var(--line); background: var(--panel); text-align: center; transition: .15s; clip-path: var(--cut); }
+    .rbtn b { font-family: var(--disp); font-weight: 600; text-transform: uppercase; font-size: 1rem; display: block; }
+    .rbtn span { font-family: var(--mono); font-size: .6rem; color: var(--ink2); letter-spacing: .06em; }
+    .rbtn.r0 b { color: var(--bad); } .rbtn.r0:hover { border-color: var(--bad); background: rgba(255,77,106,.08); }
+    .rbtn.r1 b { color: var(--mid); } .rbtn.r1:hover { border-color: var(--mid); background: rgba(255,197,61,.07); }
+    .rbtn.r2 b { color: var(--ok); }  .rbtn.r2:hover { border-color: var(--ok); background: rgba(77,227,138,.07); }
+    .flipbtn { width: 100%; margin-top: 1rem; }
+
+    .qbox { border: 1px solid var(--line); background: var(--panel); padding: 2rem 1.4rem; text-align: center; position: relative; clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px)); }
+    .qbox .lang { position: absolute; top: 1rem; left: 1.2rem; font-family: var(--mono); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--hud); }
+    .opts { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
+    .opt { border: 1px solid var(--line); background: var(--panel); padding: 1rem; text-align: left; display: flex; gap: .8rem; align-items: center; transition: .15s; font-size: 1rem; }
+    .opt kbd { flex-shrink: 0; }
+    .opt:hover:not(:disabled) { border-color: var(--hud); }
+    .opt.good { border-color: var(--ok); background: rgba(77,227,138,.1); }
+    .opt.wrong { border-color: var(--bad); background: rgba(255,77,106,.1); }
+    .opt:disabled { cursor: default; }
+
+    .tin { display: flex; gap: .5rem; margin-top: 1.4rem; }
+    .tin input { flex: 1; min-width: 0; font-family: var(--sans); font-size: 1.15rem; color: var(--ink); background: var(--deep); border: 1px solid var(--line); padding: .8rem 1rem; outline: none; transition: .15s; }
+    .tin input:focus { border-color: var(--hud); box-shadow: 0 0 0 3px var(--hud-dim); }
+    .tin input.good { border-color: var(--ok); } .tin input.wrong { border-color: var(--bad); } .tin input.near { border-color: var(--mid); }
+    .chars { display: flex; gap: .4rem; justify-content: center; margin-top: .7rem; }
+    .chars button { width: 40px; height: 36px; border: 1px solid var(--line); font-size: 1rem; transition: .15s; }
+    .chars button:hover { border-color: var(--hud); color: var(--hud); }
+    .verdict { margin-top: 1rem; min-height: 1.5em; font-size: 1rem; }
+    .verdict b { font-family: var(--disp); font-weight: 600; text-transform: uppercase; }
+    .verdict .g { color: var(--ok); } .verdict .w { color: var(--bad); } .verdict .n { color: var(--mid); }
+    .verdict .ans { font-family: var(--disp); font-weight: 600; font-size: 1.3rem; color: var(--ink); }
+    .row { display: flex; justify-content: center; gap: .6rem; margin-top: 1rem; flex-wrap: wrap; }
+
+    .done { text-align: center; padding: 2rem 0; }
+    .done .big { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); background: var(--deep); margin: 1.8rem 0; }
+    .done .big div { padding: 1.3rem .5rem; border-right: 1px solid var(--line); }
+    .done .big div:last-child { border-right: 0; }
+    .done .big b { font-family: var(--disp); font-weight: 700; font-size: 2.2rem; display: block; line-height: 1; }
+    .done .big span { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); }
+    .done .miss { text-align: left; border: 1px solid var(--line); margin-bottom: 1.6rem; }
+    .done .miss p { padding: .6rem 1rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; font-size: .92rem; }
+    .done .miss p:last-child { border-bottom: 0; }
+    .done .miss p span { color: var(--ink2); text-align: right; }
+
+    /* ── list ── */
+    .list { border: 1px solid var(--line); }
+    .li { display: grid; grid-template-columns: 10px 1fr 1fr auto; gap: 1rem; align-items: center; padding: .7rem 1rem; border-bottom: 1px solid var(--line); }
+    .li:last-child { border-bottom: 0; }
+    .li:hover { background: var(--panel); }
+    .li .d { width: 8px; height: 8px; }
+    .li .n { font-weight: 500; }
+    .li .n small { display: block; font-family: var(--mono); font-size: .66rem; color: var(--ink2); font-weight: 400; }
+    .li .t { color: var(--ink2); }
+    .li .a { display: flex; gap: .3rem; }
+    .li .a button { width: 30px; height: 30px; border: 1px solid var(--line); color: var(--ink2); font-size: .85rem; }
+    .li .a button:hover { color: var(--hud); border-color: var(--hud-dim); }
+    .li .a button.del:hover { color: var(--bad); border-color: var(--bad); }
+    .add { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: .5rem; margin-bottom: 1rem; }
+    .add input { font-family: var(--sans); font-size: .95rem; color: var(--ink); background: var(--deep); border: 1px solid var(--line); padding: .7rem .8rem; outline: none; min-width: 0; }
+    .add input:focus { border-color: var(--hud); }
+    .empty { padding: 2rem 1rem; text-align: center; color: var(--ink2); }
+
+    .toast { position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%); z-index: 60; background: var(--panel2); border: 1px solid var(--hud-dim); padding: .7rem 1.1rem; font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,.5); animation: pop .2s ease-out; }
+
+    @media (max-width: 820px) {
+      .stats { grid-template-columns: repeat(3, 1fr); }
+      .stat:nth-child(3) { border-right: 0; }
+      .stat:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+      .quick { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .brand .full { display: none; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-right: 1px solid var(--line) !important; border-bottom: 1px solid var(--line); }
+      .stat:nth-child(2n) { border-right: 0 !important; }
+      .stat:last-child { grid-column: 1 / -1; border-bottom: 0; border-right: 0 !important; }
+      .opts { grid-template-columns: 1fr; }
+      .modes { grid-template-columns: 1fr; }
+      .li { grid-template-columns: 8px 1fr auto; }
+      .li .t { grid-column: 2; grid-row: 2; margin-top: -.6rem; font-size: .88rem; }
+      .li .a { grid-row: 1 / 3; grid-column: 3; }
+      .add { grid-template-columns: 1fr 1fr; }
+      .keys { display: none; }
+      .seg button { padding: .45rem .45rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .flip { transition: none; }
+      .sheet, .toast { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#" id="toHome"><span class="dot"></span>NORSK<span>_</span>ORD<span class="full" style="color:var(--ink2);font-weight:500">&nbsp;// TR</span></a>
+  <div class="tools">
+    <div class="seg" id="dirSeg" title="Yön">
+      <button data-d="no">NO→TR</button>
+      <button data-d="tr">TR→NO</button>
+      <button data-d="mix">MIX</button>
+    </div>
+    <button class="ibtn" id="autoSay" title="Norveççeyi otomatik seslendir">🔊</button>
+  </div>
+</header>
+
+<!-- ════════ HOME ════════ -->
+<main id="home" class="wrap">
+  <div class="hero">
+    <div>
+      <p class="stag">Flashcards // bokmål → türkçe</p>
+      <h1 class="h1">Lær <em>norsk</em>,<br>hver dag</h1>
+      <p class="sub">Kartları çevir, kendini puanla. Bildiğin kelimeler daha seyrek, zorlandıkların daha sık karşına çıkar.</p>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="quick">
+    <button class="qcard main" id="qDaily">
+      <div><div class="qt">▸ Günlük tekrar</div><div class="qs" id="qDailySub"></div></div>
+      <div class="qn" id="qDailyN">0</div>
+    </button>
+    <button class="qcard" id="qMix">
+      <div><div class="qt">Karışık pratik</div><div class="qs">Tüm kategorilerden rastgele 20 kart</div></div>
+      <div class="qn">⇄</div>
+    </button>
+  </div>
+
+  <div class="ghead">
+    <p class="stag" style="margin:0">Kategoriler</p>
+    <div class="legend"><span><i class="c-ok"></i>öğrenildi</span><span><i class="c-mid"></i>öğreniliyor</span><span><i class="c-new"></i>yeni</span></div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    <span class="keys"><kbd>Space</kbd> çevir · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> puanla · <kbd>S</kbd> seslendir · <kbd>Esc</kbd> geri</span>
+    <span class="acts">
+      <button id="bExport">Yedekle ↓</button>
+      <button id="bImport">Geri yükle ↑</button>
+      <button id="bReset">Sıfırla</button>
+      <a href="../">← Ana site</a>
+    </span>
+    <input type="file" id="fImport" accept="application/json,.json" hidden />
+  </div>
+</main>
+
+<!-- ════════ STUDY / LIST ════════ -->
+<main id="study" class="wrap" hidden>
+  <div class="shead">
+    <button class="ibtn" id="back" title="Geri (Esc)">←</button>
+    <div class="tt"><b id="sTitle"></b><span id="sMode"></span><div class="prog" id="sProgW"><i id="sProg"></i></div></div>
+    <div class="cnt" id="sCnt"></div>
+  </div>
+  <div class="stage" id="stage"></div>
+</main>
+
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
+
+<script>
+/* ════════ VOCAB ════════
+   satır biçimi:  norsk | türkçe | ipucu (opsiyonel)
+   isimler artikelle (en/ei/et), fiiller "å" ile, ipucunda çekimleri */
+const CATS = [
+{ id:'hilsener', icon:'👋', no:'Hilsener', tr:'Selamlaşma', raw:`
+hei | merhaba
+hallo | alo / merhaba
+god morgen | günaydın
+god dag | iyi günler
+god kveld | iyi akşamlar
+god natt | iyi geceler
+ha det bra | hoşça kal
+ha det | görüşürüz / bay bay
+vi ses | görüşürüz
+takk | teşekkürler
+tusen takk | çok teşekkürler
+vær så snill | lütfen
+unnskyld | affedersiniz / özür dilerim
+ja | evet
+nei | hayır
+jo | evet (olumsuz soruya)
+Hvordan har du det? | Nasılsın?
+Jeg har det bra | İyiyim
+Hva heter du? | Adın ne?
+Jeg heter ... | Benim adım ...
+Hyggelig å møte deg | Tanıştığıma memnun oldum
+Ingen årsak | Rica ederim
+Velkommen | Hoş geldiniz
+Takk for maten | Yemek için teşekkürler
+Takk for sist | Son görüşmemiz için teşekkürler
+Lykke til | Bol şans
+Skål! | Şerefe!
+`},
+{ id:'uttrykk', icon:'💬', no:'Nyttige uttrykk', tr:'Günlük kalıplar', raw:`
+Jeg forstår ikke | Anlamıyorum
+Kan du snakke litt saktere? | Biraz daha yavaş konuşabilir misin?
+Kan du gjenta? | Tekrar eder misin?
+Hva betyr ...? | ... ne demek?
+Hvordan sier man ... på norsk? | ... Norveççe nasıl denir?
+Jeg snakker litt norsk | Biraz Norveççe konuşuyorum
+Jeg kommer fra Tyrkia | Türkiye'denim
+Jeg bor i Oslo | Oslo'da yaşıyorum
+Hva driver du med? | Ne iş yapıyorsun? / Ne ile uğraşıyorsun?
+Jeg vet ikke | Bilmiyorum
+Jeg tror det | Sanırım / Öyle düşünüyorum
+Jeg er enig | Katılıyorum
+Jeg er uenig | Katılmıyorum
+Det er greit | Tamam / Olur
+Ingen problem | Sorun yok
+Det går bra | Sorun değil / İyi gidiyor
+Det gjør ingenting | Önemli değil
+Det spiller ingen rolle | Fark etmez
+Så synd! | Ne yazık!
+Herlig! | Harika!
+Jeg gleder meg | Sabırsızlanıyorum / Dört gözle bekliyorum
+Jeg er lei av det | Bundan bıktım
+Ha en fin dag! | İyi günler dilerim!
+God helg! | İyi hafta sonları!
+God tur! | İyi yolculuklar!
+Kos deg! | Keyfini çıkar!
+Gratulerer med dagen! | Doğum günün kutlu olsun!
+Hvor mye koster det? | Bu ne kadar?
+Jeg vil gjerne ha ... | ... almak isterim
+`},
+{ id:'pronomen', icon:'🧑', no:'Pronomen', tr:'Zamirler', raw:`
+jeg | ben
+du | sen
+han | o (erkek)
+hun | o (kadın)
+den / det | o (cansız)
+vi | biz
+dere | siz
+de | onlar
+meg | beni / bana
+deg | seni / sana
+ham | onu (erkek)
+henne | onu (kadın)
+oss | bizi / bize
+dem | onları / onlara
+seg | kendini
+min / mi / mitt | benim
+din / di / ditt | senin
+hans | onun (erkek)
+hennes | onun (kadın)
+vår / vårt | bizim
+deres | sizin / onların
+sin / si / sitt | kendi (3. kişi)
+noen | biri / birileri
+ingen | hiç kimse
+alle | herkes
+`},
+{ id:'sporreord', icon:'❓', no:'Spørreord og småord', tr:'Soru ve bağlaç kelimeleri', raw:`
+hva | ne
+hvem | kim
+hvor | nerede / nereye
+hvorfor | neden
+når | ne zaman
+hvordan | nasıl
+hvilken / hvilket | hangi
+hvor mye | ne kadar
+hvor mange | kaç tane
+og | ve
+men | ama
+eller | veya
+fordi | çünkü
+hvis | eğer
+at | ki (bağlaç)
+så | bu yüzden / sonra
+også | de / da (ayrıca)
+bare | sadece
+veldig | çok (derece)
+mye | çok (miktar)
+litt | biraz
+ganske | oldukça
+kanskje | belki
+allerede | zaten / çoktan
+ennå | henüz
+fortsatt | hâlâ
+igjen | tekrar
+sammen | birlikte
+alene | yalnız
+ikke | değil
+`},
+{ id:'preposisjoner', icon:'📍', no:'Preposisjoner', tr:'Edatlar', raw:`
+i | içinde
+på | üstünde / -de
+under | altında
+over | üzerinde / yukarısında
+med | ile
+uten | -sız / olmadan
+til | -e / -a (yön)
+fra | -den / -dan
+ved siden av | yanında
+mellom | arasında
+foran | önünde
+bak | arkasında
+hos | -in yanında / evinde
+om | hakkında
+gjennom | içinden / boyunca
+mot | -e doğru / karşı
+etter | sonra
+før | önce
+siden | -den beri
+rundt | etrafında
+utenfor | dışında
+innenfor | içinde (sınır)
+`},
+{ id:'tall', icon:'🔢', no:'Tall', tr:'Sayılar', raw:`
+null | sıfır
+en / ett | bir
+to | iki
+tre | üç
+fire | dört
+fem | beş
+seks | altı
+sju / syv | yedi
+åtte | sekiz
+ni | dokuz
+ti | on
+elleve | on bir
+tolv | on iki
+tretten | on üç
+fjorten | on dört
+femten | on beş
+seksten | on altı
+sytten | on yedi
+atten | on sekiz
+nitten | on dokuz
+tjue | yirmi
+tretti | otuz
+førti | kırk
+femti | elli
+seksti | altmış
+sytti | yetmiş
+åtti | seksen
+nitti | doksan
+hundre | yüz
+tusen | bin
+en million | bir milyon
+første | birinci
+andre | ikinci
+tredje | üçüncü
+`},
+{ id:'tid', icon:'⏰', no:'Tid', tr:'Zaman', raw:`
+i dag | bugün
+i morgen | yarın
+i går | dün
+i overmorgen | öbür gün
+i forgårs | evvelsi gün
+i morges | bu sabah (geçmiş)
+i kveld | bu akşam
+i natt | bu gece
+nå | şimdi
+senere | sonra
+snart | yakında
+alltid | her zaman
+aldri | asla
+ofte | sık sık
+noen ganger | bazen
+et sekund | saniye
+et minutt | dakika
+en time | saat (süre)
+en dag | gün
+ei uke | hafta | en/ei uke
+en måned | ay (takvim)
+et år | yıl
+en helg | hafta sonu
+Hva er klokka? | Saat kaç?
+halv tre | iki buçuk (2:30) | "üçe yarım"
+kvart over to | ikiyi çeyrek geçiyor
+kvart på tre | üçe çeyrek var
+ti over fem | beşi on geçiyor
+`},
+{ id:'dager', icon:'📅', no:'Dager og måneder', tr:'Günler ve aylar', raw:`
+mandag | Pazartesi
+tirsdag | Salı
+onsdag | Çarşamba
+torsdag | Perşembe
+fredag | Cuma
+lørdag | Cumartesi
+søndag | Pazar
+januar | Ocak
+februar | Şubat
+mars | Mart
+april | Nisan
+mai | Mayıs
+juni | Haziran
+juli | Temmuz
+august | Ağustos
+september | Eylül
+oktober | Ekim
+november | Kasım
+desember | Aralık
+en vår | ilkbahar
+en sommer | yaz
+en høst | sonbahar
+en vinter | kış
+`},
+{ id:'familie', icon:'👨‍👩‍👧', no:'Familie', tr:'Aile', raw:`
+en familie | aile
+ei mor | anne | en/ei mor
+en far | baba
+foreldre | ebeveynler
+en bror | erkek kardeş
+ei søster | kız kardeş | en/ei søster
+søsken | kardeşler
+en sønn | oğul
+ei datter | kız evlat | en/ei datter
+et barn | çocuk
+en bestemor | büyükanne
+en bestefar | büyükbaba
+et barnebarn | torun
+en onkel | amca / dayı
+ei tante | teyze / hala | en/ei tante
+en fetter | erkek kuzen
+ei kusine | kız kuzen | en/ei kusine
+et søskenbarn | kuzen
+en mann | adam / koca
+ei kone | karı / eş | en/ei kone
+en kjæreste | sevgili
+en venn | arkadaş
+ei venninne | kız arkadaş (arkadaşlık) | en/ei venninne
+ei svigermor | kayınvalide | en/ei svigermor
+en svoger | kayınbirader / enişte
+gift | evli
+skilt | boşanmış
+singel | bekar
+`},
+{ id:'kropp', icon:'🫀', no:'Kroppen', tr:'Vücut', raw:`
+et hode | baş / kafa
+et hår | saç
+et ansikt | yüz
+et øye | göz | flertall: øyne
+et øre | kulak
+en nese | burun
+en munn | ağız
+en tann | diş | flertall: tenner
+ei tunge | dil (organ) | en/ei tunge
+en hals | boyun / boğaz
+en skulder | omuz
+en arm | kol
+ei hånd | el | en/ei hånd · flertall: hender
+en finger | parmak
+en mage | karın / mide
+en rygg | sırt
+et bein | bacak / kemik
+et kne | diz
+en fot | ayak | flertall: føtter
+et hjerte | kalp
+en hud | cilt / deri
+et blod | kan
+Jeg har vondt i hodet | Başım ağrıyor
+Jeg er syk | Hastayım
+`},
+{ id:'mat', icon:'🍞', no:'Mat og drikke', tr:'Yiyecek ve içecek', raw:`
+et brød | ekmek
+en ost | peynir
+et smør | tereyağı
+et egg | yumurta
+en melk | süt | en/ei melk
+et vann | su
+en kaffe | kahve
+en te | çay
+en juice | meyve suyu
+et øl | bira
+en vin | şarap
+et kjøtt | et
+en fisk | balık
+en kylling | tavuk
+en pølse | sosis
+et eple | elma
+en banan | muz
+en appelsin | portakal
+en tomat | domates
+en potet | patates
+en løk | soğan
+en gulrot | havuç
+en ris | pirinç / pilav
+en suppe | çorba
+en salat | salata
+et sukker | şeker
+et salt | tuz
+en pepper | karabiber
+en kake | kek / pasta
+en frokost | kahvaltı
+en lunsj | öğle yemeği
+en middag | akşam yemeği
+sulten | aç
+tørst | susamış
+Det smaker godt | Tadı güzel
+`},
+{ id:'hjem', icon:'🏠', no:'Hjemme', tr:'Ev', raw:`
+et hus | ev
+en leilighet | daire
+et rom | oda
+et soverom | yatak odası
+ei stue | oturma odası | en/ei stue
+et kjøkken | mutfak
+et bad | banyo
+et toalett | tuvalet
+en dør | kapı
+et vindu | pencere
+et bord | masa
+en stol | sandalye
+ei seng | yatak | en/ei seng
+en sofa | kanepe
+et skap | dolap
+et kjøleskap | buzdolabı
+en ovn | fırın / soba
+en lampe | lamba
+et teppe | halı / battaniye
+et speil | ayna
+en nøkkel | anahtar
+en trapp | merdiven
+en hage | bahçe
+en balkong | balkon
+et gulv | zemin
+et tak | çatı / tavan
+en vegg | duvar
+`},
+{ id:'klaer', icon:'🧥', no:'Klær', tr:'Giysiler', raw:`
+klær | giysiler
+en genser | kazak
+ei skjorte | gömlek | en/ei skjorte
+en T-skjorte | tişört
+ei bukse | pantolon | en/ei bukse
+et skjørt | etek
+en kjole | elbise
+ei jakke | ceket / mont | en/ei jakke
+ei lue | bere | en/ei lue
+et skjerf | atkı
+votter | parmaksız eldiven
+hansker | eldiven
+en sko | ayakkabı | flertall: sko
+støvler | botlar
+sokker | çoraplar
+en dress | takım elbise
+et belte | kemer
+ei veske | çanta | en/ei veske
+briller | gözlük
+en hatt | şapka
+ei regnjakke | yağmurluk | en/ei regnjakke
+å ta på seg | giymek
+å kle av seg | soyunmak
+`},
+{ id:'farger', icon:'🎨', no:'Farger', tr:'Renkler', raw:`
+rød | kırmızı
+blå | mavi
+grønn | yeşil
+gul | sarı
+svart | siyah
+hvit | beyaz
+grå | gri
+brun | kahverengi
+rosa | pembe
+lilla | mor
+oransje | turuncu
+turkis | turkuaz
+mørk | koyu
+lys | açık (renk)
+mørkeblå | lacivert
+lyseblå | açık mavi
+gull | altın
+sølv | gümüş
+`},
+{ id:'vaer', icon:'🌦️', no:'Vær og natur', tr:'Hava ve doğa', raw:`
+et vær | hava (durumu)
+en sol | güneş
+et regn | yağmur
+en snø | kar
+en vind | rüzgar
+en sky | bulut
+en tåke | sis
+et tordenvær | gök gürültülü fırtına
+Det regner | Yağmur yağıyor
+Det snør | Kar yağıyor
+Det er kaldt | Hava soğuk
+Det er varmt | Hava sıcak
+et fjell | dağ
+en fjord | fiyort
+en innsjø | göl
+ei elv | nehir | en/ei elv
+et hav | deniz / okyanus
+en skog | orman
+et tre | ağaç
+en blomst | çiçek
+en strand | plaj
+ei øy | ada | en/ei øy
+en himmel | gökyüzü
+ei stjerne | yıldız | en/ei stjerne
+en måne | ay (gök cismi)
+`},
+{ id:'by', icon:'🏙️', no:'Byen', tr:'Şehir ve yerler', raw:`
+en by | şehir
+et sentrum | merkez
+en butikk | dükkan
+en matbutikk | market
+et apotek | eczane
+et sykehus | hastane
+en lege | doktor
+en tannlege | diş hekimi
+en bank | banka
+en kirke | kilise
+en moské | cami
+en park | park
+et bibliotek | kütüphane
+en restaurant | restoran
+en kafé | kafe
+et museum | müze
+en kino | sinema
+et torg | meydan
+ei bru | köprü | en/ei bru
+en politistasjon | karakol
+et treningssenter | spor salonu
+en frisør | kuaför / berber
+et kjøpesenter | alışveriş merkezi
+en gate | cadde / sokak
+`},
+{ id:'reise', icon:'🚆', no:'Reise og transport', tr:'Seyahat ve ulaşım', raw:`
+en bil | araba
+en buss | otobüs
+et tog | tren
+en trikk | tramvay
+en T-bane | metro
+et fly | uçak
+en båt | tekne
+ei ferje | feribot | en/ei ferje
+en sykkel | bisiklet
+en drosje | taksi
+en billett | bilet
+en stasjon | istasyon
+en holdeplass | durak
+en flyplass | havalimanı
+et pass | pasaport
+en koffert | bavul
+et hotell | otel
+et kart | harita
+en vei | yol
+til venstre | sola
+til høyre | sağa
+rett fram | dümdüz ileri
+nær | yakın
+langt unna | uzak
+Hvor er ...? | ... nerede?
+en avgang | kalkış
+en ankomst | varış
+forsinket | gecikmeli
+`},
+{ id:'jobb', icon:'💼', no:'Jobb og skole', tr:'İş ve okul', raw:`
+en jobb | iş
+et arbeid | iş / çalışma
+en arbeidsplass | işyeri
+en sjef | patron / şef
+en kollega | iş arkadaşı
+et møte | toplantı
+en lønn | maaş
+en søknad | başvuru
+et intervju | mülakat
+en CV | özgeçmiş
+et kontor | ofis
+en skole | okul
+et universitet | üniversite
+en student | öğrenci (üniversite)
+en elev | öğrenci (okul)
+en lærer | öğretmen
+en eksamen | sınav
+ei oppgave | görev / ödev | en/ei oppgave
+et kurs | kurs
+en utdanning | eğitim
+en erfaring | deneyim
+en frist | son tarih
+en ferie | tatil
+heltid | tam zamanlı
+deltid | yarı zamanlı
+ledig | boş / açık (pozisyon)
+arbeidsledig | işsiz
+å søke på en jobb | işe başvurmak
+`},
+{ id:'fritid', icon:'⛷️', no:'Fritid og sport', tr:'Boş zaman ve spor', raw:`
+fritid | boş zaman
+en hobby | hobi
+å gå på ski | kayak yapmak
+å svømme | yüzmek
+å løpe | koşmak
+å trene | antrenman yapmak
+å sykle | bisiklet sürmek
+å gå tur | yürüyüşe çıkmak
+å padle | kürek çekmek
+å hoppe i fallskjerm | paraşütle atlamak
+en fotballkamp | futbol maçı
+et lag | takım
+å vinne | kazanmak
+å tape | kaybetmek
+en film | film
+musikk | müzik
+å spille | oynamak / çalmak (enstrüman)
+å synge | şarkı söylemek
+å danse | dans etmek
+å lage mat | yemek yapmak
+å ta bilder | fotoğraf çekmek
+ei hytte | dağ evi / kulübe | en/ei hytte
+en tur | gezi / yürüyüş
+å slappe av | dinlenmek
+en drone | drone
+`},
+{ id:'verb', icon:'🏃', no:'Viktige verb', tr:'Temel fiiller', raw:`
+å være | olmak | er · var · har vært
+å ha | sahip olmak | har · hadde · har hatt
+å gjøre | yapmak | gjør · gjorde · har gjort
+å gå | yürümek / gitmek | går · gikk · har gått
+å komme | gelmek | kommer · kom · har kommet
+å se | görmek | ser · så · har sett
+å si | söylemek | sier · sa · har sagt
+å spise | yemek (yemek yemek) | spiser · spiste · har spist
+å drikke | içmek | drikker · drakk · har drukket
+å sove | uyumak | sover · sov · har sovet
+å snakke | konuşmak | snakker · snakket · har snakket
+å forstå | anlamak | forstår · forsto · har forstått
+å vite | bilmek | vet · visste · har visst
+å kunne | -ebilmek | kan · kunne · har kunnet
+å ville | istemek | vil · ville · har villet
+å måtte | zorunda olmak | må · måtte · har måttet
+å skrive | yazmak | skriver · skrev · har skrevet
+å lese | okumak | leser · leste · har lest
+å høre | duymak / dinlemek | hører · hørte · har hørt
+å kjøpe | satın almak | kjøper · kjøpte · har kjøpt
+å betale | ödemek | betaler · betalte · har betalt
+å jobbe | çalışmak (iş) | jobber · jobbet · har jobbet
+å lære | öğrenmek | lærer · lærte · har lært
+å bo | yaşamak / oturmak (ikamet) | bor · bodde · har bodd
+å like | hoşlanmak / sevmek | liker · likte · har likt
+å elske | sevmek (aşk) | elsker · elsket · har elsket
+å reise | seyahat etmek | reiser · reiste · har reist
+å kjøre | araba sürmek | kjører · kjørte · har kjørt
+å ta | almak | tar · tok · har tatt
+å gi | vermek | gir · ga · har gitt
+å finne | bulmak | finner · fant · har funnet
+å tenke | düşünmek | tenker · tenkte · har tenkt
+å synes | düşünmek (fikir) / bence | synes · syntes · har syntes
+å hjelpe | yardım etmek | hjelper · hjalp · har hjulpet
+å vente | beklemek | venter · ventet · har ventet
+å åpne | açmak | åpner · åpnet · har åpnet
+å lukke | kapatmak | lukker · lukket · har lukket
+å begynne | başlamak | begynner · begynte · har begynt
+å slutte | bitirmek / bırakmak | slutter · sluttet · har sluttet
+å trenge | ihtiyaç duymak | trenger · trengte · har trengt
+å bli | olmak (dönüşmek) / kalmak | blir · ble · har blitt
+å sitte | oturmak | sitter · satt · har sittet
+å stå | ayakta durmak | står · sto · har stått
+å ligge | uzanmak / yatmak | ligger · lå · har ligget
+å ringe | aramak (telefon) | ringer · ringte · har ringt
+å glemme | unutmak | glemmer · glemte · har glemt
+å huske | hatırlamak | husker · husket · har husket
+å vaske | yıkamak | vasker · vasket · har vasket
+`},
+{ id:'adjektiv', icon:'⚖️', no:'Adjektiv', tr:'Sıfatlar', raw:`
+stor | büyük
+liten | küçük
+ny | yeni
+gammel | eski / yaşlı
+ung | genç
+god | iyi
+dårlig | kötü
+fin | güzel / hoş
+pen | güzel (görünüş)
+stygg | çirkin
+lang | uzun
+kort | kısa
+høy | uzun boylu / yüksek
+lav | alçak / kısa boylu
+tung | ağır
+lett | hafif / kolay
+vanskelig | zor
+billig | ucuz
+dyr | pahalı
+rask | hızlı
+treg | yavaş
+varm | sıcak
+kald | soğuk
+full | dolu / sarhoş
+tom | boş
+ren | temiz
+skitten | kirli
+rik | zengin
+fattig | fakir
+sterk | güçlü
+svak | zayıf
+trøtt | yorgun / uykulu
+travel | meşgul
+kjedelig | sıkıcı
+viktig | önemli
+riktig | doğru
+feil | yanlış
+åpen | açık
+stengt | kapalı
+`},
+{ id:'folelser', icon:'💛', no:'Følelser og personlighet', tr:'Duygular ve kişilik', raw:`
+glad | mutlu
+trist | üzgün
+lei seg | üzgün (kırgın)
+sint | kızgın
+redd | korkmuş
+nervøs | gergin
+stresset | stresli
+rolig | sakin
+stolt | gururlu
+sjalu | kıskanç
+forelsket | aşık
+flau | utanmış / mahcup
+overrasket | şaşırmış
+fornøyd | memnun
+skuffet | hayal kırıklığına uğramış
+ensom | yalnız
+snill | nazik / iyi kalpli
+høflig | kibar
+frekk | kaba / küstah
+lat | tembel
+flink | becerikli / başarılı
+morsom | komik / eğlenceli
+sjenert | utangaç
+ærlig | dürüst
+modig | cesur
+Jeg savner deg | Seni özledim
+Jeg elsker deg | Seni seviyorum
+`},
+];
+const CUSTOM = { id:'custom', icon:'✍️', no:'Mine ord', tr:'Kendi kelimelerim', custom:true };
+
+/* ════════ storage ════════ */
+const KEY = 'norsk-ord.v1';
+const DAY = 864e5;
+const IV = [0, 1, 3, 7, 14, 30, 60];   // Leitner kutu aralıkları (gün)
+const MASTER = 4;                       // bu kutu ve üstü = öğrenildi
+const SESSION = 20, NEW_PER_DAY = 10;
+
+const fresh = () => ({ p:{}, custom:[], streak:{ last:null, n:0 }, day:{ d:null, n:0 }, dir:'no', auto:false, goal:30 });
+let S = load();
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object') return Object.assign(fresh(), s); } catch(e){}
+  return fresh();
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+/* ════════ helpers ════════ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { for (let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const today = () => ymd(new Date());
+const midnight = () => { const d=new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+
+CATS.forEach(c => c.words = c.raw.trim().split('\n').map(l => l.split('|').map(x => x.trim())).filter(r => r[0] && r[1]));
+const ALLCATS = [...CATS, CUSTOM];
+const catById = id => ALLCATS.find(c => c.id === id);
+const wordsOf = c => c.custom ? S.custom.map(w => [w.no, w.tr, w.hint || '']) : c.words;
+const cardsOf = c => wordsOf(c).map(([no,tr,hint]) => ({ id:c.id+'|'+no, no, tr, hint:hint||'', cat:c.id }));
+const allCards = () => ALLCATS.flatMap(cardsOf);
+
+const status = id => { const p=S.p[id]; return !p ? 'new' : p.b >= MASTER ? 'ok' : 'mid'; };
+const isDue  = id => { const p=S.p[id]; return !!p && p.due <= Date.now(); };
+
+function counts(cards){
+  const r = { n:cards.length, ok:0, mid:0, new:0, due:0 };
+  cards.forEach(c => { r[status(c.id)]++; if (isDue(c.id)) r.due++; });
+  return r;
+}
+function streakNow(){
+  const y = new Date(Date.now()-DAY);
+  return (S.streak.last === today() || S.streak.last === ymd(y)) ? S.streak.n : 0;
+}
+function todayCount(){ return S.day.d === today() ? S.day.n : 0; }
+function newLeftToday(){ return Math.max(0, NEW_PER_DAY - (S.day.d === today() ? (S.day.newN||0) : 0)); }
+
+/* ════════ SRS ════════ */
+function grade(card, q){          // q: 0 bilmiyorum · 1 zor · 2 biliyorum
+  const was = S.p[card.id];
+  const p = was || { b:0, due:0, r:0, w:0 };
+  if (q === 0){ p.b = 0; p.due = Date.now(); p.w++; }
+  else if (q === 1){ p.b = Math.max(1, p.b); p.due = midnight() + IV[1]*DAY; p.r++; }
+  else { p.b = Math.min(IV.length-1, p.b+1); p.due = midnight() + IV[p.b]*DAY; p.r++; }
+  p.t = Date.now();
+  S.p[card.id] = p;
+  const t = today();
+  if (S.day.d !== t) S.day = { d:t, n:0, newN:0 };
+  S.day.n++;
+  if (!was) S.day.newN = (S.day.newN||0) + 1;
+  if (S.streak.last !== t){
+    S.streak.n = S.streak.last === ymd(new Date(Date.now()-DAY)) ? S.streak.n + 1 : 1;
+    S.streak.last = t;
+  }
+  save();
+}
+
+/* ════════ speech ════════ */
+let voice = null;
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  voice = vs.find(v => /^nb/i.test(v.lang)) || vs.find(v => /^no/i.test(v.lang)) || vs.find(v => /^nn/i.test(v.lang)) || null;
+}
+if ('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text){
+  if (!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text.replace(/\.\.\./g,'').replace(/\(.*?\)/g,'').replace(/\//g,','));
+  u.lang = voice ? voice.lang : 'nb-NO'; if (voice) u.voice = voice; u.rate = .9;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+
+/* ════════ answer checking ════════ */
+const norm = (s, tr) => {
+  s = s.replace(/\(.*?\)/g,'').replace(/\.\.\./g,'').replace(/[.,!?¿¡"'’:;]/g,' ');
+  s = tr ? s.toLocaleLowerCase('tr') : s.toLowerCase();
+  return s.replace(/\s+/g,' ').trim();
+};
+const foldTr = s => s.replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/â/g,'a').replace(/î/g,'i');
+const stripArt = s => s.replace(/^(en|ei|et|å)\s+/,'');
+function lev(a, b){
+  const m=a.length, n=b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({length:n+1}, (_,i)=>i);
+  for (let i=1;i<=m;i++){ const cur=[i]; for (let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
+  return prev[n];
+}
+function check(input, answer, isTr){       // 'good' | 'near' | 'wrong'
+  const inp = norm(input, isTr); if (!inp) return 'wrong';
+  const alts = answer.split('/').map(a => norm(a, isTr)).filter(Boolean);
+  let best = 'wrong';
+  for (const a of alts){
+    const forms = isTr ? [a] : [a, stripArt(a)];
+    const ins = isTr ? [inp] : [inp, stripArt(inp)];
+    for (const f of forms) for (const i of ins){
+      if (i === f) return 'good';
+      if (isTr && foldTr(i) === foldTr(f)) return 'good';
+      if (f.length > 3 && lev(i, f) <= (f.length > 8 ? 2 : 1)) best = 'near';
+    }
+  }
+  return best;
+}
+
+/* ════════ views ════════ */
+function show(id){
+  $('#home').hidden = id !== 'home';
+  $('#study').hidden = id !== 'study';
+  scrollTo(0,0);
+}
+function toast(msg){
+  const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2200);
+}
+const bar3 = c => c.n ? `<div class="bar3"><i class="c-ok" style="width:${c.ok/c.n*100}%"></i><i class="c-mid" style="width:${c.mid/c.n*100}%"></i><i class="c-new" style="width:${c.new/c.n*100}%"></i></div>` : `<div class="bar3"></div>`;
+
+function renderHome(){
+  sess = null; view = 'home'; show('home');
+  const all = counts(allCards()), done = todayCount();
+  $('#stats').innerHTML = `
+    <div class="stat"><b>${all.n}</b><span>Toplam kelime</span></div>
+    <div class="stat"><b style="color:var(--hud)">${all.ok}</b><span>Öğrenildi</span></div>
+    <div class="stat"><b style="color:var(--mid)">${all.mid}</b><span>Öğreniliyor</span></div>
+    <div class="stat"><b>${streakNow()}<span style="display:inline;font-size:1.2rem;margin:0 0 0 .2ch">🔥</span></b><span>Gün serisi</span></div>
+    <div class="stat"><b>${done}<span style="display:inline;font-family:var(--mono);font-size:.8rem;color:var(--ink2)"> / ${S.goal}</span></b><span>Bugün çalışılan</span><div class="gbar"><i style="width:${Math.min(100, done/S.goal*100)}%"></i></div></div>`;
+  const nNew = Math.min(newLeftToday(), all.new);
+  $('#qDailyN').textContent = all.due + nNew;
+  $('#qDailySub').textContent = all.due + nNew
+    ? `${all.due} tekrar · ${nNew} yeni kelime`
+    : 'Bugünlük hepsi tamam ✓ Yarın yeni kartlar gelecek';
+  $('#grid').innerHTML = ALLCATS.map(c => {
+    const k = counts(cardsOf(c));
+    return `<button class="cat ${c.custom?'custom':''}" data-cat="${c.id}">
+      ${k.due ? `<span class="due">${k.due} tekrar</span>` : ''}
+      <span class="ic">${c.icon}</span>
+      <span class="cn" lang="nb">${c.no}</span>
+      <span class="ct">${c.tr}</span>
+      ${bar3(k)}
+      <span class="cm"><span>${k.ok}/${k.n} öğrenildi</span><span>${k.new ? k.new+' yeni' : k.n ? '✓' : 'boş'}</span></span>
+    </button>`;
+  }).join('');
+}
+
+function openCat(id){
+  const c = catById(id), k = counts(cardsOf(c));
+  const can = k.n > 0, canQuiz = k.n >= 2 || allCards().length >= 4;
+  $('#sheet').innerHTML = `
+    <button class="ibtn x" data-close>✕</button>
+    <div class="ic">${c.icon}</div>
+    <h3 lang="nb">${c.no}</h3>
+    <p class="ct">${c.tr}</p>
+    ${bar3(k)}
+    <p class="cm"><span style="color:var(--hud)">${k.ok} öğrenildi</span><span style="color:var(--mid)">${k.mid} öğreniliyor</span><span>${k.new} yeni</span>${k.due?`<span style="color:var(--sig)">${k.due} tekrar bekliyor</span>`:''}</p>
+    <div class="modes">
+      <button class="mode prim" data-mode="card" ${can?'':'disabled'}><b>🃏 Kartlar</b><span>Çevir ve kendini puanla</span></button>
+      <button class="mode" data-mode="quiz" ${can&&canQuiz?'':'disabled'}><b>🎯 Test</b><span>4 şıktan doğruyu seç</span></button>
+      <button class="mode" data-mode="type" ${can?'':'disabled'}><b>⌨️ Yaz</b><span>Cevabı kendin yaz</span></button>
+      <button class="mode" data-mode="list"><b>📋 Liste</b><span>${c.custom ? 'Kelime ekle / sil' : 'Tüm kelimeleri gör'}</span></button>
+    </div>`;
+  $('#sheet').dataset.cat = id;
+  $('#modal').hidden = false;
+}
+const closeModal = () => { $('#modal').hidden = true; };
+
+/* ════════ sessions ════════ */
+let sess = null, view = 'home';
+const MODE_TR = { card:'Kartlar', quiz:'Test', type:'Yazma' };
+
+function buildQueue(scope){
+  let pool, pick;
+  if (scope === 'daily'){
+    pool = allCards();
+    const due = shuffle(pool.filter(c => isDue(c.id)));
+    const nw = pool.filter(c => !S.p[c.id]).slice(0, newLeftToday());
+    pick = [...due, ...nw];
+  } else if (scope === 'mix'){
+    pool = shuffle(allCards());
+    const due = pool.filter(c => isDue(c.id)), rest = pool.filter(c => !isDue(c.id));
+    pick = [...due, ...rest].slice(0, SESSION);
+  } else {
+    pool = cardsOf(catById(scope));
+    const due = shuffle(pool.filter(c => isDue(c.id)));
+    const nw  = pool.filter(c => !S.p[c.id]);
+    pick = [...due, ...nw].slice(0, SESSION);
+    if (!pick.length) pick = shuffle(pool.slice()).slice(0, SESSION);   // hepsi öğrenildiyse serbest pratik
+  }
+  return shuffle(pick).map(c => ({ ...c, rev: S.dir === 'tr' || (S.dir === 'mix' && Math.random() < .5) }));
+}
+
+function start(scope, mode){
+  closeModal();
+  if (mode === 'list') return renderList(scope);
+  const q = buildQueue(scope);
+  if (!q.length){ toast(scope === 'daily' ? 'Bugünlük tekrar yok — harika!' : 'Bu kategoride kart yok'); return; }
+  const title = scope === 'daily' ? 'Günlük tekrar' : scope === 'mix' ? 'Karışık pratik' : catById(scope).no;
+  sess = { scope, mode, q, total:q.length, done:0, ok:0, bad:0, missed:new Map(), first:new Set(), title };
+  view = 'study';
+  $('#sTitle').textContent = title;
+  $('#sTitle').lang = scope === 'daily' || scope === 'mix' ? 'tr' : 'nb';
+  $('#sMode').textContent = MODE_TR[mode];
+  $('#sProgW').hidden = false;
+  show('study');
+  next();
+}
+
+function hud(){
+  $('#sProg').style.width = (sess.done / sess.total * 100) + '%';
+  $('#sCnt').innerHTML = `<b>${sess.done}</b> / ${sess.total}`;
+}
+
+function next(){
+  hud();
+  if (!sess.q.length) return finish();
+  const c = sess.q[0];
+  ({ card:renderCard, quiz:renderQuiz, type:renderType })[sess.mode](c);
+}
+
+function answer(q){
+  const c = sess.q.shift();
+  grade(c, q);
+  if (!sess.first.has(c.id)){ sess.first.add(c.id); q === 0 ? sess.bad++ : sess.ok++; }
+  if (q === 0){
+    sess.missed.set(c.id, c);
+    sess.q.splice(Math.min(3, sess.q.length), 0, c);    // birkaç kart sonra tekrar sor
+  } else sess.done++;
+  next();
+}
+
+const prompt = c => c.rev ? c.tr : c.no;
+const reply  = c => c.rev ? c.no : c.tr;
+const longCls = s => s.length > 18 ? 'word long' : 'word';
+const STAT_TR = { new:'yeni', mid:'öğreniliyor', ok:'öğrenildi' };
+
+function sayBtn(c){ return `<button class="say" data-say="${esc(c.no)}" title="Seslendir (S)">🔊</button>`; }
+
+function renderCard(c){
+  const front = c.rev
+    ? `<span class="lang">Türkçe</span><span class="st">${STAT_TR[status(c.id)]}</span><div class="${longCls(c.tr)}">${esc(c.tr)}</div>`
+    : `<span class="lang">Norsk</span><span class="st">${STAT_TR[status(c.id)]}</span><div class="${longCls(c.no)}">${esc(c.no)}</div>${sayBtn(c)}`;
+  const back = c.rev
+    ? `<span class="lang">Norsk</span><div class="${longCls(c.no)}">${esc(c.no)}</div>${c.hint?`<div class="hint">${esc(c.hint)}</div>`:''}${sayBtn(c)}`
+    : `<span class="lang">Türkçe</span><div class="${longCls(c.tr)}">${esc(c.tr)}</div>${c.hint?`<div class="hint">${esc(c.hint)}</div>`:''}`;
+  $('#stage').innerHTML = `
+    <div class="scene"><div class="flip" id="flip">
+      <div class="face front">${front}<span class="tap">çevirmek için tıkla · space</span></div>
+      <div class="face back">${back}</div>
+    </div></div>
+    <button class="btn flipbtn" id="flipBtn">Cevabı göster</button>
+    <div class="rate" id="rate" hidden>
+      <button class="rbtn r0" data-q="0"><b>Bilmiyorum</b><span>1 · tekrar sor</span></button>
+      <button class="rbtn r1" data-q="1"><b>Zor</b><span>2 · yarın</span></button>
+      <button class="rbtn r2" data-q="2"><b>Biliyorum</b><span>3 · ${nextLabel(c)}</span></button>
+    </div>`;
+  if (S.auto && !c.rev) speak(c.no);
+}
+function nextLabel(c){
+  const p = S.p[c.id], b = Math.min(IV.length-1, (p ? p.b : 0) + 1), d = IV[b];
+  return d === 1 ? 'yarın' : d < 30 ? d + ' gün' : Math.round(d/30) + ' ay';
+}
+function flip(){
+  const f = $('#flip'); if (!f || f.classList.contains('on')) return;
+  f.classList.add('on');
+  $('#flipBtn').hidden = true; $('#rate').hidden = false;
+  const c = sess.q[0]; if (S.auto && c.rev) speak(c.no);
+}
+
+function renderQuiz(c){
+  const pool = (cardsOf(catById(c.cat)).length >= 4 ? cardsOf(catById(c.cat)) : allCards());
+  const right = reply(c);
+  const others = shuffle(pool.filter(x => reply({ ...x, rev:c.rev }) !== right).map(x => reply({ ...x, rev:c.rev })));
+  const opts = shuffle([right, ...[...new Set(others)].slice(0, 3)]);
+  $('#stage').innerHTML = `
+    <div class="qbox">
+      <span class="lang">${c.rev ? 'Türkçe' : 'Norsk'}</span>
+      <div class="${longCls(prompt(c))}">${esc(prompt(c))}</div>
+      ${c.rev ? '' : sayBtn(c)}
+    </div>
+    <div class="opts" id="opts">${opts.map((o,i) => `<button class="opt" data-o="${esc(o)}"><kbd>${i+1}</kbd><span>${esc(o)}</span></button>`).join('')}</div>
+    <div class="verdict" id="verdict"></div>`;
+  $('#stage').dataset.right = right;
+  sess.pending = null;
+  if (S.auto && !c.rev) speak(c.no);
+}
+function pickOpt(btn){
+  if (!btn || btn.disabled) return;
+  const c = sess.q[0], right = $('#stage').dataset.right, ok = btn.dataset.o === right;
+  document.querySelectorAll('.opt').forEach(b => { b.disabled = true; if (b.dataset.o === right) b.classList.add('good'); });
+  if (!ok) btn.classList.add('wrong');
+  if (c.rev) speak(c.no);
+  $('#verdict').innerHTML = ok
+    ? `<b class="g">Doğru!</b>${c.hint?` <span style="color:var(--ink2);font-family:var(--mono);font-size:.8rem">· ${esc(c.hint)}</span>`:''}`
+    : `<b class="w">Yanlış</b> — doğrusu: <span class="ans">${esc(right)}</span><div class="row"><button class="btn" data-go="0">Devam ↵</button></div>`;
+  sess.pending = ok ? 2 : 0;
+  if (ok) sess.timer = setTimeout(() => answer(2), 850);
+}
+
+function renderType(c){
+  const toNo = c.rev;
+  $('#stage').innerHTML = `
+    <div class="qbox">
+      <span class="lang">${toNo ? 'Türkçe → norsk yaz' : 'Norsk → türkçe yaz'}</span>
+      <div class="${longCls(prompt(c))}">${esc(prompt(c))}</div>
+      ${toNo ? '' : sayBtn(c)}
+    </div>
+    <form class="tin" id="tform" autocomplete="off">
+      <input id="tinp" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${toNo ? 'norsk…' : 'türkçe…'}" />
+      <button class="btn sig" type="submit">Kontrol</button>
+    </form>
+    ${toNo ? `<div class="chars"><button type="button" data-ch="æ">æ</button><button type="button" data-ch="ø">ø</button><button type="button" data-ch="å">å</button></div>` : ''}
+    <div class="verdict" id="verdict"></div>
+    <div class="row" id="trow"><button class="btn" id="giveUp" type="button">Bilmiyorum</button></div>`;
+  sess.checked = false;
+  setTimeout(() => $('#tinp') && $('#tinp').focus(), 30);
+  if (S.auto && !toNo) speak(c.no);
+}
+function submitType(giveUp){
+  const c = sess.q[0], inp = $('#tinp');
+  if (sess.checked){ return answer(sess.pending); }
+  const res = giveUp ? 'wrong' : check(inp.value, reply(c), !c.rev);
+  if (!giveUp && !inp.value.trim()) return;
+  sess.checked = true; inp.readOnly = true; inp.classList.add(res);
+  sess.pending = res === 'good' ? 2 : res === 'near' ? 1 : 0;
+  speak(c.no);
+  const hint = c.hint ? `<div class="hint">${esc(c.hint)}</div>` : '';
+  $('#verdict').innerHTML =
+      res === 'good' ? `<b class="g">Doğru!</b> <span class="ans">${esc(reply(c))}</span>${hint}`
+    : res === 'near' ? `<b class="n">Neredeyse</b> — doğrusu: <span class="ans">${esc(reply(c))}</span>${hint}`
+    : `<b class="w">${giveUp ? 'Cevap' : 'Yanlış'}</b> — <span class="ans">${esc(reply(c))}</span>${hint}`;
+  $('#trow').innerHTML = `<button class="btn sig" id="tnext" type="button">Devam ↵</button>`;
+  $('#tnext').focus();
+}
+
+function finish(){
+  hud();
+  const missed = [...sess.missed.values()];
+  const pct = sess.total ? Math.round(sess.ok / sess.total * 100) : 0;
+  const msg = pct >= 90 ? 'Fantastisk! 🎉' : pct >= 70 ? 'Bra jobba! 💪' : pct >= 40 ? 'Godt i gang 👍' : 'Øvelse gjør mester 🔁';
+  $('#stage').innerHTML = `
+    <div class="done">
+      <p class="stag" style="justify-content:center">Oturum bitti</p>
+      <h2 class="h1" lang="nb" style="font-size:clamp(1.8rem,5vw,2.8rem)">${msg}</h2>
+      <div class="big">
+        <div><b style="color:var(--ok)">${sess.ok}</b><span>İlk seferde</span></div>
+        <div><b style="color:var(--bad)">${sess.bad}</b><span>Zorlandın</span></div>
+        <div><b>${pct}%</b><span>Başarı</span></div>
+      </div>
+      ${missed.length ? `<p class="stag">Tekrar bak</p><div class="miss">${missed.map(c => `<p><b>${esc(c.no)}</b><span>${esc(c.tr)}</span></p>`).join('')}</div>` : ''}
+      <div class="row">
+        <button class="btn sig" id="again">↻ Yeni tur</button>
+        <button class="btn" id="home2">Ana sayfa</button>
+      </div>
+    </div>`;
+  $('#sCnt').innerHTML = '';
+}
+
+/* ════════ list view ════════ */
+function renderList(id){
+  const c = catById(id); sess = null; view = 'list';
+  $('#sTitle').textContent = `${c.icon} ${c.no}`;
+  $('#sTitle').lang = 'nb';
+  $('#sMode').textContent = `${c.tr} · ${wordsOf(c).length} kelime`;
+  $('#sProgW').hidden = true; $('#sCnt').innerHTML = '';
+  const cards = cardsOf(c);
+  const dot = s => s === 'ok' ? 'c-ok' : s === 'mid' ? 'c-mid' : 'c-new';
+  $('#stage').style.maxWidth = '820px';
+  $('#stage').innerHTML = `
+    ${c.custom ? `<form class="add" id="addForm" autocomplete="off">
+      <input name="no" placeholder="norsk (ör. en katt)" required />
+      <input name="tr" placeholder="türkçe (ör. kedi)" required />
+      <input name="hint" placeholder="ipucu (opsiyonel)" />
+      <button class="btn sig" type="submit">Ekle</button>
+    </form>` : ''}
+    <div class="list">${cards.length ? cards.map((k,i) => `
+      <div class="li">
+        <span class="d ${dot(status(k.id))}"></span>
+        <span class="n">${esc(k.no)}${k.hint?`<small>${esc(k.hint)}</small>`:''}</span>
+        <span class="t">${esc(k.tr)}</span>
+        <span class="a"><button data-say="${esc(k.no)}" title="Seslendir">🔊</button>${c.custom?`<button class="del" data-del="${i}" title="Sil">✕</button>`:''}</span>
+      </div>`).join('') : `<div class="empty">Henüz kelime yok. Yukarıdan ilk kelimeni ekle ✍️</div>`}
+    </div>
+    ${cards.length ? `<div class="row" style="margin-top:1.4rem"><button class="btn sig" data-start="${id}" data-m="card">🃏 Kartlarla çalış</button><button class="btn" data-start="${id}" data-m="quiz">🎯 Test</button><button class="btn" data-start="${id}" data-m="type">⌨️ Yaz</button></div>` : ''}`;
+  show('study');
+  $('#stage').dataset.list = id;
+  if (c.custom) setTimeout(() => $('#addForm input').focus(), 30);
+}
+
+/* ════════ events ════════ */
+$('#toHome').addEventListener('click', e => { e.preventDefault(); renderHome(); });
+$('#back').addEventListener('click', goBack);
+function goBack(){ clearTimeout(sess && sess.timer); speechSynthesis && speechSynthesis.cancel(); $('#stage').style.maxWidth = ''; renderHome(); }
+
+$('#qDaily').addEventListener('click', () => start('daily', 'card'));
+$('#qMix').addEventListener('click', () => start('mix', 'card'));
+$('#grid').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) openCat(b.dataset.cat); });
+
+$('#modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget || e.target.closest('[data-close]')) return closeModal();
+  const m = e.target.closest('[data-mode]'); if (m && !m.disabled) start($('#sheet').dataset.cat, m.dataset.mode);
+});
+
+function syncTools(){
+  document.querySelectorAll('#dirSeg button').forEach(b => b.classList.toggle('on', b.dataset.d === S.dir));
+  $('#autoSay').classList.toggle('on', !!S.auto);
+}
+$('#dirSeg').addEventListener('click', e => {
+  const b = e.target.closest('[data-d]'); if (!b) return;
+  S.dir = b.dataset.d; save(); syncTools();
+  toast(S.dir === 'no' ? 'Norveççe → Türkçe' : S.dir === 'tr' ? 'Türkçe → Norveççe' : 'Karışık yön');
+});
+$('#autoSay').addEventListener('click', () => {
+  S.auto = !S.auto; save(); syncTools();
+  toast(S.auto ? 'Otomatik seslendirme açık' : 'Otomatik seslendirme kapalı');
+  if (S.auto && !voice) setTimeout(() => toast('Not: tarayıcında Norveççe ses bulunamadı'), 2300);
+});
+
+$('#stage').addEventListener('click', e => {
+  const t = e.target;
+  const say = t.closest('[data-say]'); if (say){ e.stopPropagation(); return speak(say.dataset.say); }
+  if (t.closest('#flip') || t.closest('#flipBtn')) return flip();
+  const r = t.closest('[data-q]'); if (r) return answer(+r.dataset.q);
+  const o = t.closest('.opt'); if (o) return pickOpt(o);
+  if (t.closest('[data-go]')){ clearTimeout(sess.timer); return answer(sess.pending); }
+  if (t.closest('#giveUp')) return submitType(true);
+  if (t.closest('#tnext')) return submitType();
+  const ch = t.closest('[data-ch]'); if (ch){ const i = $('#tinp'); if (i && !i.readOnly){ const s = i.selectionStart ?? i.value.length; i.value = i.value.slice(0,s) + ch.dataset.ch + i.value.slice(i.selectionEnd ?? s); i.focus(); i.setSelectionRange(s+1, s+1); } return; }
+  if (t.closest('#again')) return start(sess.scope, sess.mode);
+  if (t.closest('#home2')) return goBack();
+  const st = t.closest('[data-start]'); if (st){ $('#stage').style.maxWidth = ''; return start(st.dataset.start, st.dataset.m); }
+  const del = t.closest('[data-del]');
+  if (del){
+    const w = S.custom[+del.dataset.del]; if (!w) return;
+    if (!confirm(`"${w.no}" silinsin mi?`)) return;
+    S.custom.splice(+del.dataset.del, 1); delete S.p['custom|'+w.no]; save(); renderList('custom');
+  }
+});
+$('#stage').addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'tform') return submitType();
+  if (e.target.id === 'addForm'){
+    const f = new FormData(e.target), no = f.get('no').trim(), tr = f.get('tr').trim(), hint = f.get('hint').trim();
+    if (!no || !tr) return;
+    if (S.custom.some(w => w.no === no)) return toast('Bu kelime zaten var');
+    S.custom.unshift({ no: no.replace(/\|/g,'/'), tr, hint }); save(); renderList('custom'); toast(`"${no}" eklendi`);
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!$('#modal').hidden){ if (e.key === 'Escape') closeModal(); return; }
+  if (e.key === 'Escape'){ if (view !== 'home'){ e.preventDefault(); goBack(); } return; }
+  if (!sess || !sess.q.length) {
+    if (sess && !sess.q.length && e.key === 'Enter' && $('#again')){ e.preventDefault(); start(sess.scope, sess.mode); }
+    return;
+  }
+  const c = sess.q[0];
+  if (sess.mode === 'card'){
+    const on = $('#flip') && $('#flip').classList.contains('on');
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); if (!on) flip(); return; }
+    if (on && ['1','2','3'].includes(e.key)) return answer(+e.key - 1);
+    if (e.key === 's' || e.key === 'S') return speak(c.no);
+  } else if (sess.mode === 'quiz'){
+    const opts = [...document.querySelectorAll('.opt')];
+    if (['1','2','3','4'].includes(e.key)) return pickOpt(opts[+e.key - 1]);
+    if (e.key === 'Enter' && sess.pending != null){ e.preventDefault(); clearTimeout(sess.timer); return answer(sess.pending); }
+    if (e.key === 's' || e.key === 'S') return speak(c.no);
+  } else if (sess.mode === 'type'){
+    if (e.key === 'Enter' && sess.checked && !e.target.matches('button')){ e.preventDefault(); return submitType(); }
+  }
+});
+
+/* backup */
+$('#bExport').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(S, null, 1)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `norsk-ord-${today()}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+$('#bImport').addEventListener('click', () => $('#fImport').click());
+$('#fImport').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (!d || typeof d.p !== 'object') throw 0;
+    S = Object.assign(fresh(), d); save(); syncTools(); renderHome(); toast('İlerleme geri yüklendi ✓');
+  } catch(err){ toast('Dosya okunamadı'); }
+  e.target.value = '';
+});
+$('#bReset').addEventListener('click', () => {
+  if (!confirm('Tüm ilerleme silinsin mi? (Kendi kelimelerin kalır)')) return;
+  const keep = S.custom; S = fresh(); S.custom = keep; save(); syncTools(); renderHome(); toast('İlerleme sıfırlandı');
+});
+
+syncTools();
+renderHome();
+</script>
+</body>
+</html>

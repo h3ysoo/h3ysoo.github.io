@@ -285,6 +285,8 @@
 
     footer { border-top: 1px solid var(--line); padding: 1.1rem var(--pad); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); }
     footer a:hover { color: var(--hud); }
+    footer .nk { opacity: .18; margin-left: 1.1ch; transition: opacity .2s, color .2s; }
+    footer .nk:hover { opacity: 1; color: var(--sig); }
 
     /* ══════════════ responsive ══════════════ */
     @media (max-width: 940px) {
@@ -454,7 +456,7 @@
 <footer>
   <span>© 2026 JOSEF SELEN — OSLO</span>
   <span>SKIS WAXED · BATTERIES CHARGED</span>
-  <a href="https://github.com/h3ysoo/h3ysoo.github.io" target="_blank" rel="noopener">SOURCE ↗</a>
+  <span><a href="https://github.com/h3ysoo/h3ysoo.github.io" target="_blank" rel="noopener">SOURCE ↗</a><a class="nk" href="norsk/" aria-label="norsk">◆</a></span>
 </footer>
 
 <script>
