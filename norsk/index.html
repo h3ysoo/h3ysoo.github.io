@@ -57,7 +57,10 @@
     }
     .brand { font-family: var(--disp); font-weight: 700; font-size: 1rem; letter-spacing: .06em; display: flex; align-items: center; gap: .55ch; white-space: nowrap; }
     .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sig); box-shadow: 0 0 10px var(--sig); }
-    .brand span { color: var(--hud); }
+    .brand span span { color: var(--hud); }
+    .seg#langSeg button { font-size: .9rem; padding: .3rem .5rem; }
+    .tl { font-family: var(--mono); font-size: .78rem; color: var(--hud); opacity: .75; margin-top: .5rem; letter-spacing: .02em; }
+    .li .tl { margin-top: .1rem; font-size: .66rem; }
     .tools { display: flex; align-items: center; gap: .5rem; }
     .seg { display: flex; border: 1px solid var(--line); }
     .seg button { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; padding: .45rem .6rem; color: var(--ink2); transition: .15s; }
@@ -243,6 +246,10 @@
     }
     @media (max-width: 560px) {
       .brand .full { display: none; }
+      .brand { font-size: .82rem; }
+      .tools { gap: .3rem; }
+      .seg#langSeg button { padding: .3rem .35rem; }
+      .ibtn#autoSay { width: 30px; }
       .stats { grid-template-columns: repeat(2, 1fr); }
       .stat { border-right: 1px solid var(--line) !important; border-bottom: 1px solid var(--line); }
       .stat:nth-child(2n) { border-right: 0 !important; }
@@ -256,6 +263,10 @@
       .keys { display: none; }
       .seg button { padding: .45rem .45rem; }
     }
+    @media (max-width: 440px) {
+      #brandName { display: none; }
+      header { gap: .5rem; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .flip { transition: none; }
       .sheet, .toast { animation: none; }
@@ -265,14 +276,18 @@
 <body>
 
 <header>
-  <a class="brand" href="#" id="toHome"><span class="dot"></span>NORSK<span>_</span>ORD<span class="full" style="color:var(--ink2);font-weight:500">&nbsp;// TR</span></a>
+  <a class="brand" href="#" id="toHome"><span class="dot"></span><span id="brandName"></span><span class="full" style="color:var(--ink2);font-weight:500">&nbsp;// TR</span></a>
   <div class="tools">
+    <div class="seg" id="langSeg" title="Dil">
+      <button data-l="no" title="Norsk">🇳🇴</button>
+      <button data-l="ru" title="Русский">🇷🇺</button>
+    </div>
     <div class="seg" id="dirSeg" title="Yön">
-      <button data-d="no">NO→TR</button>
-      <button data-d="tr">TR→NO</button>
+      <button data-d="no"></button>
+      <button data-d="tr"></button>
       <button data-d="mix">MIX</button>
     </div>
-    <button class="ibtn" id="autoSay" title="Norveççeyi otomatik seslendir">🔊</button>
+    <button class="ibtn" id="autoSay" title="Otomatik seslendir">🔊</button>
   </div>
 </header>
 
@@ -280,8 +295,8 @@
 <main id="home" class="wrap">
   <div class="hero">
     <div>
-      <p class="stag">Flashcards // bokmål → türkçe</p>
-      <h1 class="h1">Lær <em>norsk</em>,<br>hver dag</h1>
+      <p class="stag" id="heroTag"></p>
+      <h1 class="h1" id="heroH1"></h1>
       <p class="sub">Kartları çevir, kendini puanla. Bildiğin kelimeler daha seyrek, zorlandıkların daha sık karşına çıkar.</p>
     </div>
   </div>
@@ -333,7 +348,7 @@
 /* ════════ VOCAB ════════
    satır biçimi:  norsk | türkçe | ipucu (opsiyonel)
    isimler artikelle (en/ei/et), fiiller "å" ile, ipucunda çekimleri */
-const CATS = [
+const NO_CATS = [
 { id:'hilsener', icon:'👋', no:'Hilsener', tr:'Selamlaşma', raw:`
 hei | merhaba
 hallo | alo / merhaba
@@ -996,7 +1011,672 @@ Jeg savner deg | Seni özledim
 Jeg elsker deg | Seni seviyorum
 `},
 ];
-const CUSTOM = { id:'custom', icon:'✍️', no:'Mine ord', tr:'Kendi kelimelerim', custom:true };
+const RU_CATS = [
+{ id:'hilsener', icon:'👋', no:'Приветствия', tr:'Selamlaşma', raw:`
+привет | merhaba (samimi)
+здравствуйте | merhaba / iyi günler (resmi)
+доброе утро | günaydın
+добрый день | iyi günler
+добрый вечер | iyi akşamlar
+спокойной ночи | iyi geceler
+до свидания | hoşça kalın
+пока | görüşürüz / bay bay
+увидимся | görüşürüz
+спасибо | teşekkürler
+большое спасибо | çok teşekkürler
+пожалуйста | lütfen / rica ederim
+извините | affedersiniz / özür dilerim
+да | evet
+нет | hayır
+Как дела? | Nasılsın?
+Хорошо, спасибо | İyiyim, teşekkürler
+Как тебя зовут? | Adın ne?
+Меня зовут ... | Benim adım ...
+Очень приятно | Memnun oldum
+Не за что | Bir şey değil
+Добро пожаловать | Hoş geldiniz
+Приятного аппетита | Afiyet olsun
+Удачи! | Bol şans!
+За здоровье! | Şerefe! / Sağlığına!
+С днём рождения! | Doğum günün kutlu olsun!
+`},
+{ id:'uttrykk', icon:'💬', no:'Полезные фразы', tr:'Günlük kalıplar', raw:`
+Я не понимаю | Anlamıyorum
+Говорите медленнее, пожалуйста | Lütfen daha yavaş konuşun
+Повторите, пожалуйста | Tekrar eder misiniz lütfen
+Что значит ...? | ... ne demek?
+Как сказать ... по-русски? | ... Rusça nasıl denir?
+Я немного говорю по-русски | Biraz Rusça konuşuyorum
+Я из Турции | Türkiye'denim
+Я живу в Осло | Oslo'da yaşıyorum
+Чем ты занимаешься? | Ne iş yapıyorsun? / Ne ile uğraşıyorsun?
+Я не знаю | Bilmiyorum
+Я думаю, да | Sanırım evet
+Я согласен | Katılıyorum | kadın: я согласна
+Ладно | Tamam / Peki
+Нет проблем | Sorun yok
+Ничего страшного | Önemli değil
+Всё равно | Fark etmez
+Жаль! | Yazık!
+Отлично! | Harika!
+Конечно | Tabii ki
+Сколько это стоит? | Bu ne kadar?
+Я хочу ... | ... istiyorum
+Можно? | Olur mu? / İzin var mı?
+Где туалет? | Tuvalet nerede?
+Помогите! | İmdat! / Yardım edin!
+Хорошего дня! | İyi günler!
+Счастливого пути! | İyi yolculuklar!
+Мне нравится | Hoşuma gidiyor
+`},
+{ id:'pronomen', icon:'🧑', no:'Местоимения', tr:'Zamirler', raw:`
+я | ben
+ты | sen
+он | o (erkek)
+она | o (kadın)
+оно | o (nötr)
+мы | biz
+вы | siz
+они | onlar
+меня | beni
+тебя | seni
+его | onu / onun (erkek)
+её | onu / onun (kadın)
+нас | bizi
+вас | sizi
+их | onları / onların
+мой / моя / моё | benim
+твой / твоя / твоё | senin
+наш / наша / наше | bizim
+ваш / ваша / ваше | sizin
+свой | kendi
+этот / эта / это | bu
+тот / та / то | o / şu (işaret)
+кто-то | biri
+никто | hiç kimse
+все | herkes
+`},
+{ id:'sporreord', icon:'❓', no:'Вопросы и союзы', tr:'Soru ve bağlaç kelimeleri', raw:`
+что | ne
+кто | kim
+где | nerede
+куда | nereye
+откуда | nereden
+почему | neden
+когда | ne zaman
+как | nasıl
+какой | hangi / nasıl bir
+сколько | ne kadar / kaç
+и | ve
+а | ise / ama
+но | ama
+или | veya
+потому что | çünkü
+если | eğer
+чтобы | -mek için
+тоже | de / da
+только | sadece
+очень | çok (derece)
+много | çok (miktar)
+немного | biraz
+довольно | oldukça
+может быть | belki
+уже | zaten / artık
+ещё | hâlâ / daha
+опять | tekrar
+вместе | birlikte
+не | değil
+`},
+{ id:'preposisjoner', icon:'📍', no:'Предлоги', tr:'Edatlar', raw:`
+в | içinde / -e
+на | üstünde / -de
+под | altında
+над | üzerinde
+с | ile
+без | -sız / olmadan
+к | -e doğru / yanına
+от | -den (kişiden)
+из | -den (içinden)
+у | -in yanında / -de | у меня = bende
+рядом с | yanında
+между | arasında
+перед | önünde
+за | arkasında
+о | hakkında
+через | içinden / sonra
+против | karşı
+после | sonra
+до | -e kadar / önce
+для | için
+около | yakınında
+вокруг | etrafında
+`},
+{ id:'tall', icon:'🔢', no:'Числа', tr:'Sayılar', raw:`
+ноль | sıfır
+один | bir
+два | iki
+три | üç
+четыре | dört
+пять | beş
+шесть | altı
+семь | yedi
+восемь | sekiz
+девять | dokuz
+десять | on
+одиннадцать | on bir
+двенадцать | on iki
+тринадцать | on üç
+четырнадцать | on dört
+пятнадцать | on beş
+шестнадцать | on altı
+семнадцать | on yedi
+восемнадцать | on sekiz
+девятнадцать | on dokuz
+двадцать | yirmi
+тридцать | otuz
+сорок | kırk
+пятьдесят | elli
+шестьдесят | altmış
+семьдесят | yetmiş
+восемьдесят | seksen
+девяносто | doksan
+сто | yüz
+тысяча | bin
+миллион | bir milyon
+первый | birinci
+второй | ikinci
+третий | üçüncü
+`},
+{ id:'tid', icon:'⏰', no:'Время', tr:'Zaman', raw:`
+сегодня | bugün
+завтра | yarın
+вчера | dün
+послезавтра | öbür gün
+позавчера | evvelsi gün
+утром | sabahleyin
+днём | gündüz
+вечером | akşamleyin
+ночью | gece
+сейчас | şimdi
+потом | sonra
+скоро | yakında
+всегда | her zaman
+никогда | asla
+часто | sık sık
+иногда | bazen
+рано | erken
+поздно | geç
+секунда | saniye
+минута | dakika
+час | saat (süre)
+день | gün
+неделя | hafta
+месяц | ay (takvim)
+год | yıl
+выходные | hafta sonu
+Который час? | Saat kaç?
+половина третьего | iki buçuk (2:30) | "üçün yarısı"
+`},
+{ id:'dager', icon:'📅', no:'Дни и месяцы', tr:'Günler ve aylar', raw:`
+понедельник | Pazartesi
+вторник | Salı
+среда | Çarşamba
+четверг | Perşembe
+пятница | Cuma
+суббота | Cumartesi
+воскресенье | Pazar
+январь | Ocak
+февраль | Şubat
+март | Mart
+апрель | Nisan
+май | Mayıs
+июнь | Haziran
+июль | Temmuz
+август | Ağustos
+сентябрь | Eylül
+октябрь | Ekim
+ноябрь | Kasım
+декабрь | Aralık
+весна | ilkbahar
+лето | yaz
+осень | sonbahar
+зима | kış
+`},
+{ id:'familie', icon:'👨‍👩‍👧', no:'Семья', tr:'Aile', raw:`
+семья | aile
+мама | anne
+папа | baba
+мать | anne (resmi)
+отец | baba (resmi)
+родители | ebeveynler
+брат | erkek kardeş
+сестра | kız kardeş
+сын | oğul
+дочь | kız evlat
+ребёнок | çocuk | çoğul: дети
+бабушка | büyükanne
+дедушка | büyükbaba
+внук | erkek torun
+внучка | kız torun
+дядя | amca / dayı
+тётя | teyze / hala
+двоюродный брат | erkek kuzen
+двоюродная сестра | kız kuzen
+муж | koca
+жена | karı / eş
+друг | arkadaş / dost
+подруга | kız arkadaş (arkadaşlık)
+парень | erkek arkadaş (sevgili) / genç
+девушка | kız arkadaş (sevgili) / genç kız
+женат | evli (erkek)
+замужем | evli (kadın)
+свекровь | kayınvalide (kocanın annesi)
+тёща | kayınvalide (karının annesi)
+`},
+{ id:'kropp', icon:'🫀', no:'Тело', tr:'Vücut', raw:`
+голова | baş / kafa
+волосы | saç
+лицо | yüz
+глаз | göz | çoğul: глаза
+ухо | kulak | çoğul: уши
+нос | burun
+рот | ağız
+зуб | diş
+язык | dil (organ / lisan)
+шея | boyun
+горло | boğaz
+плечо | omuz
+рука | kol / el
+палец | parmak
+живот | karın
+спина | sırt
+нога | bacak / ayak
+колено | diz
+сердце | kalp
+кожа | cilt / deri
+кровь | kan
+У меня болит голова | Başım ağrıyor
+Я болею | Hastayım
+`},
+{ id:'mat', icon:'🍞', no:'Еда и напитки', tr:'Yiyecek ve içecek', raw:`
+хлеб | ekmek
+сыр | peynir
+масло | tereyağı / yağ
+яйцо | yumurta
+молоко | süt
+вода | su
+кофе | kahve
+чай | çay
+сок | meyve suyu
+пиво | bira
+вино | şarap
+мясо | et
+рыба | balık
+курица | tavuk
+колбаса | salam / sucuk
+яблоко | elma
+банан | muz
+апельсин | portakal
+помидор | domates
+картошка | patates
+лук | soğan
+морковь | havuç
+рис | pirinç / pilav
+суп | çorba
+салат | salata
+сахар | şeker
+соль | tuz
+перец | biber
+торт | pasta
+завтрак | kahvaltı
+обед | öğle yemeği
+ужин | akşam yemeği
+голодный | aç
+Я хочу пить | Susadım | "içmek istiyorum"
+Вкусно! | Lezzetli!
+`},
+{ id:'hjem', icon:'🏠', no:'Дом', tr:'Ev', raw:`
+дом | ev
+квартира | daire
+комната | oda
+спальня | yatak odası
+гостиная | oturma odası
+кухня | mutfak
+ванная | banyo
+туалет | tuvalet
+дверь | kapı
+окно | pencere
+стол | masa
+стул | sandalye
+кровать | yatak
+диван | kanepe
+шкаф | dolap
+холодильник | buzdolabı
+плита | ocak
+лампа | lamba
+ковёр | halı
+одеяло | battaniye / yorgan
+зеркало | ayna
+ключ | anahtar
+лестница | merdiven
+сад | bahçe
+балкон | balkon
+пол | zemin
+потолок | tavan
+крыша | çatı
+стена | duvar
+`},
+{ id:'klaer', icon:'🧥', no:'Одежда', tr:'Giysiler', raw:`
+одежда | giysiler
+свитер | kazak
+рубашка | gömlek
+футболка | tişört
+брюки | pantolon
+джинсы | kot pantolon
+юбка | etek
+платье | elbise
+куртка | mont / ceket
+пальто | palto
+шапка | bere
+шарф | atkı
+перчатки | eldiven
+обувь | ayakkabılar (genel)
+туфли | ayakkabı (klasik)
+ботинки | bot
+кроссовки | spor ayakkabı
+носки | çoraplar
+костюм | takım elbise
+ремень | kemer
+сумка | çanta
+очки | gözlük
+надевать | giymek | сов. надеть
+снимать | çıkarmak (giysi) | сов. снять
+`},
+{ id:'farger', icon:'🎨', no:'Цвета', tr:'Renkler', raw:`
+красный | kırmızı
+синий | mavi (koyu)
+голубой | mavi (açık)
+зелёный | yeşil
+жёлтый | sarı
+чёрный | siyah
+белый | beyaz
+серый | gri
+коричневый | kahverengi
+розовый | pembe
+фиолетовый | mor
+оранжевый | turuncu
+тёмный | koyu
+светлый | açık (renk)
+золотой | altın
+серебряный | gümüş
+`},
+{ id:'vaer', icon:'🌦️', no:'Погода и природа', tr:'Hava ve doğa', raw:`
+погода | hava (durumu)
+солнце | güneş
+дождь | yağmur
+снег | kar
+ветер | rüzgar
+облако | bulut
+туман | sis
+гроза | gök gürültülü fırtına
+Идёт дождь | Yağmur yağıyor
+Идёт снег | Kar yağıyor
+Холодно | Hava soğuk
+Жарко | Hava sıcak
+гора | dağ
+озеро | göl
+река | nehir
+море | deniz
+лес | orman
+дерево | ağaç
+цветок | çiçek
+пляж | plaj
+остров | ada
+небо | gökyüzü
+звезда | yıldız
+луна | ay (gök cismi)
+`},
+{ id:'by', icon:'🏙️', no:'Город', tr:'Şehir ve yerler', raw:`
+город | şehir
+центр | merkez
+магазин | dükkan / mağaza
+супермаркет | süpermarket
+аптека | eczane
+больница | hastane
+врач | doktor
+стоматолог | diş hekimi
+банк | banka
+церковь | kilise
+мечеть | cami
+парк | park
+библиотека | kütüphane
+ресторан | restoran
+кафе | kafe
+музей | müze
+кино | sinema
+площадь | meydan
+мост | köprü
+полиция | polis
+спортзал | spor salonu
+парикмахерская | kuaför / berber
+торговый центр | alışveriş merkezi
+улица | cadde / sokak
+рынок | pazar
+`},
+{ id:'reise', icon:'🚆', no:'Транспорт и поездки', tr:'Seyahat ve ulaşım', raw:`
+машина | araba
+автобус | otobüs
+поезд | tren
+трамвай | tramvay
+метро | metro
+самолёт | uçak
+лодка | tekne
+корабль | gemi
+велосипед | bisiklet
+такси | taksi
+билет | bilet
+вокзал | gar (tren)
+остановка | durak
+аэропорт | havalimanı
+паспорт | pasaport
+чемодан | bavul
+гостиница | otel
+карта | harita
+дорога | yol
+налево | sola
+направо | sağa
+прямо | dümdüz
+близко | yakın
+далеко | uzak
+Где ...? | ... nerede?
+отправление | kalkış
+прибытие | varış
+опоздание | gecikme
+`},
+{ id:'jobb', icon:'💼', no:'Работа и учёба', tr:'İş ve okul', raw:`
+работа | iş
+офис | ofis
+начальник | patron / şef
+коллега | iş arkadaşı
+встреча | toplantı / buluşma
+зарплата | maaş
+резюме | özgeçmiş
+собеседование | mülakat
+компания | şirket
+профессия | meslek
+школа | okul
+университет | üniversite
+студент | öğrenci (üniversite)
+ученик | öğrenci (okul)
+учитель | öğretmen
+экзамен | sınav
+задание | görev / ödev
+урок | ders
+курс | kurs
+образование | eğitim
+опыт | deneyim
+срок | süre / son tarih
+отпуск | izin / tatil (iş)
+каникулы | tatil (okul)
+`},
+{ id:'fritid', icon:'⛷️', no:'Досуг и спорт', tr:'Boş zaman ve spor', raw:`
+свободное время | boş zaman
+хобби | hobi
+кататься на лыжах | kayak yapmak
+плавать | yüzmek
+бегать | koşmak
+заниматься спортом | spor yapmak
+кататься на велосипеде | bisiklet sürmek
+гулять | yürüyüş yapmak / gezmek
+футбольный матч | futbol maçı
+команда | takım
+выигрывать | kazanmak | сов. выиграть
+проигрывать | kaybetmek | сов. проиграть
+фильм | film
+музыка | müzik
+играть | oynamak / çalmak (enstrüman)
+петь | şarkı söylemek
+танцевать | dans etmek
+готовить | yemek yapmak
+фотографировать | fotoğraf çekmek
+дача | yazlık / bahçeli ev
+поход | doğa yürüyüşü / kamp
+отдыхать | dinlenmek
+путешествовать | seyahat etmek
+`},
+{ id:'verb', icon:'🏃', no:'Глаголы', tr:'Temel fiiller', raw:`
+быть | olmak | geçmiş: был, была, были
+делать | yapmak | я делаю, ты делаешь · сов. сделать
+идти | gitmek (yürüyerek) | я иду, ты идёшь · сов. пойти
+ехать | gitmek (araçla) | я еду, ты едешь · сов. поехать
+приходить | gelmek | я прихожу, ты приходишь · сов. прийти
+видеть | görmek | я вижу, ты видишь · сов. увидеть
+говорить | konuşmak / söylemek | я говорю, ты говоришь · сов. сказать
+есть | yemek (yemek yemek) | я ем, ты ешь · сов. съесть
+пить | içmek | я пью, ты пьёшь · сов. выпить
+спать | uyumak | я сплю, ты спишь
+понимать | anlamak | я понимаю, ты понимаешь · сов. понять
+знать | bilmek | я знаю, ты знаешь
+мочь | -ebilmek | я могу, ты можешь · сов. смочь
+хотеть | istemek | я хочу, ты хочешь, они хотят
+писать | yazmak | я пишу, ты пишешь · сов. написать
+читать | okumak | я читаю, ты читаешь · сов. прочитать
+слушать | dinlemek | я слушаю, ты слушаешь · сов. послушать
+слышать | duymak | я слышу, ты слышишь · сов. услышать
+покупать | satın almak | я покупаю, ты покупаешь · сов. купить
+платить | ödemek | я плачу, ты платишь · сов. заплатить
+работать | çalışmak (iş) | я работаю, ты работаешь
+учить | öğrenmek / öğretmek | я учу, ты учишь · сов. выучить
+жить | yaşamak | я живу, ты живёшь
+любить | sevmek | я люблю, ты любишь
+нравиться | hoşa gitmek | мне нравится · сов. понравиться
+думать | düşünmek | я думаю, ты думаешь · сов. подумать
+брать | almak | я беру, ты берёшь · сов. взять
+давать | vermek | я даю, ты даёшь · сов. дать
+находить | bulmak | я нахожу, ты находишь · сов. найти
+помогать | yardım etmek | я помогаю, ты помогаешь · сов. помочь
+ждать | beklemek | я жду, ты ждёшь · сов. подождать
+открывать | açmak | я открываю · сов. открыть
+закрывать | kapatmak | я закрываю · сов. закрыть
+начинать | başlamak | я начинаю · сов. начать
+заканчивать | bitirmek | я заканчиваю · сов. закончить
+сидеть | oturmak | я сижу, ты сидишь
+стоять | ayakta durmak | я стою, ты стоишь
+звонить | aramak (telefon) | я звоню, ты звонишь · сов. позвонить
+забывать | unutmak | я забываю · сов. забыть
+помнить | hatırlamak | я помню, ты помнишь
+мыть | yıkamak | я мою, ты моешь · сов. помыть
+спрашивать | sormak | я спрашиваю · сов. спросить
+отвечать | cevap vermek | я отвечаю · сов. ответить
+У меня есть ... | Benim ... var
+`},
+{ id:'adjektiv', icon:'⚖️', no:'Прилагательные', tr:'Sıfatlar', raw:`
+большой | büyük
+маленький | küçük
+новый | yeni
+старый | eski / yaşlı
+молодой | genç
+хороший | iyi
+плохой | kötü
+красивый | güzel
+некрасивый | çirkin
+длинный | uzun
+короткий | kısa
+высокий | yüksek / uzun boylu
+низкий | alçak / kısa boylu
+тяжёлый | ağır
+лёгкий | hafif / kolay
+трудный | zor
+дешёвый | ucuz
+дорогой | pahalı / sevgili
+быстрый | hızlı
+медленный | yavaş
+горячий | sıcak (nesne)
+тёплый | ılık / sıcak
+холодный | soğuk
+полный | dolu
+пустой | boş
+чистый | temiz
+грязный | kirli
+богатый | zengin
+бедный | fakir
+сильный | güçlü
+слабый | zayıf
+усталый | yorgun
+занятый | meşgul
+скучный | sıkıcı
+интересный | ilginç
+важный | önemli
+правильный | doğru
+открытый | açık
+закрытый | kapalı
+`},
+{ id:'folelser', icon:'💛', no:'Чувства и характер', tr:'Duygular ve kişilik', raw:`
+счастливый | mutlu
+грустный | üzgün
+злой | kızgın / kötü kalpli
+испуганный | korkmuş
+нервный | gergin
+спокойный | sakin
+гордый | gururlu
+ревнивый | kıskanç
+влюблённый | aşık
+удивлённый | şaşırmış
+довольный | memnun
+разочарованный | hayal kırıklığına uğramış
+одинокий | yalnız
+добрый | nazik / iyi kalpli
+вежливый | kibar
+грубый | kaba
+ленивый | tembel
+умный | akıllı
+весёлый | neşeli
+застенчивый | utangaç
+честный | dürüst
+смелый | cesur
+Мне грустно | İçim burkuk / Üzgünüm
+Я скучаю по тебе | Seni özledim
+Я тебя люблю | Seni seviyorum
+`},
+];
+
+const LANGS = {
+  no: { cats:NO_CATS, code:'NO', label:'Norsk', trName:'Norveççe', hl:'nb', tts:/^(nb|no|nn)/i, ttsLang:'nb-NO', prefix:'',
+        title:'Norsk Ord', brand:'NORSK<span>_</span>ORD', tag:'Flashcards // bokmål → türkçe', hero:'Lær <em>norsk</em>,<br>hver dag',
+        custom:'Mine ord', ph:'norsk (ör. en katt)', chars:['æ','ø','å'],
+        msgs:['Fantastisk! 🎉','Bra jobba! 💪','Godt i gang 👍','Øvelse gjør mester 🔁'] },
+  ru: { cats:RU_CATS, code:'RU', label:'Русский', trName:'Rusça', hl:'ru', tts:/^ru/i, ttsLang:'ru-RU', prefix:'ru:',
+        title:'Русские слова', brand:'РУССКИЙ<span>_</span>ЯЗЫК', tag:'Flashcards // русский → türkçe', hero:'Учи <em>русский</em>,<br>каждый день',
+        custom:'Мои слова', ph:'русский (ör. кошка)', chars:[],
+        msgs:['Отлично! 🎉','Молодец! 💪','Хорошее начало 👍','Повторение — мать учения 🔁'] },
+};
+const LG = () => LANGS[S.lang] || LANGS.no;
+const CUSTOM = { id:'custom', icon:'✍️', tr:'Kendi kelimelerim', custom:true };
+
+/* rusça için okunuş (latin harfli) */
+const TL = {а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'yo',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'kh',ц:'ts',ч:'ch',ш:'sh',щ:'shch',ъ:'',ы:'y',ь:"'",э:'e',ю:'yu',я:'ya'};
+const translit = s => s.replace(/[а-яё]/gi, ch => { const l = TL[ch.toLowerCase()] ?? ch; return ch === ch.toLowerCase() || !l ? l : l[0].toUpperCase() + l.slice(1); });
+const pron = w => S.lang === 'ru' ? `<div class="tl">${esc(translit(w))}</div>` : '';
 
 /* ════════ storage ════════ */
 const KEY = 'norsk-ord.v1';
@@ -1005,7 +1685,7 @@ const IV = [0, 1, 3, 7, 14, 30, 60];   // Leitner kutu aralıkları (gün)
 const MASTER = 4;                       // bu kutu ve üstü = öğrenildi
 const SESSION = 20, NEW_PER_DAY = 10;
 
-const fresh = () => ({ p:{}, custom:[], streak:{ last:null, n:0 }, day:{ d:null, n:0 }, dir:'no', auto:false, goal:30 });
+const fresh = () => ({ p:{}, custom:[], custom_ru:[], streak:{ last:null, n:0 }, day:{ d:null, n:0 }, day_ru:{ d:null, n:0 }, dir:'no', auto:false, goal:30, lang:'no' });
 let S = load();
 function load(){
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object') return Object.assign(fresh(), s); } catch(e){}
@@ -1021,12 +1701,15 @@ const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-$
 const today = () => ymd(new Date());
 const midnight = () => { const d=new Date(); d.setHours(0,0,0,0); return d.getTime(); };
 
-CATS.forEach(c => c.words = c.raw.trim().split('\n').map(l => l.split('|').map(x => x.trim())).filter(r => r[0] && r[1]));
-const ALLCATS = [...CATS, CUSTOM];
-const catById = id => ALLCATS.find(c => c.id === id);
-const wordsOf = c => c.custom ? S.custom.map(w => [w.no, w.tr, w.hint || '']) : c.words;
-const cardsOf = c => wordsOf(c).map(([no,tr,hint]) => ({ id:c.id+'|'+no, no, tr, hint:hint||'', cat:c.id }));
-const allCards = () => ALLCATS.flatMap(cardsOf);
+[...NO_CATS, ...RU_CATS].forEach(c => c.words = c.raw.trim().split('\n').map(l => l.split('|').map(x => x.trim())).filter(r => r[0] && r[1]));
+const sfx = () => S.lang === 'no' ? '' : '_' + S.lang;      // dil başına ayrı alanlar (norveççe eski anahtarları korur)
+const myWords = () => (S['custom'+sfx()] ||= []);
+const myDay = () => (S['day'+sfx()] ||= { d:null, n:0 });
+const allCats = () => [...LG().cats, { ...CUSTOM, no:LG().custom }];
+const catById = id => allCats().find(c => c.id === id);
+const wordsOf = c => c.custom ? myWords().map(w => [w.no, w.tr, w.hint || '']) : c.words;
+const cardsOf = c => wordsOf(c).map(([no,tr,hint]) => ({ id:LG().prefix+c.id+'|'+no, no, tr, hint:hint||'', cat:c.id }));
+const allCards = () => allCats().flatMap(cardsOf);
 
 const status = id => { const p=S.p[id]; return !p ? 'new' : p.b >= MASTER ? 'ok' : 'mid'; };
 const isDue  = id => { const p=S.p[id]; return !!p && p.due <= Date.now(); };
@@ -1040,8 +1723,8 @@ function streakNow(){
   const y = new Date(Date.now()-DAY);
   return (S.streak.last === today() || S.streak.last === ymd(y)) ? S.streak.n : 0;
 }
-function todayCount(){ return S.day.d === today() ? S.day.n : 0; }
-function newLeftToday(){ return Math.max(0, NEW_PER_DAY - (S.day.d === today() ? (S.day.newN||0) : 0)); }
+function todayCount(){ const d = myDay(); return d.d === today() ? d.n : 0; }
+function newLeftToday(){ const d = myDay(); return Math.max(0, NEW_PER_DAY - (d.d === today() ? (d.newN||0) : 0)); }
 
 /* ════════ SRS ════════ */
 function grade(card, q){          // q: 0 bilmiyorum · 1 zor · 2 biliyorum
@@ -1053,9 +1736,10 @@ function grade(card, q){          // q: 0 bilmiyorum · 1 zor · 2 biliyorum
   p.t = Date.now();
   S.p[card.id] = p;
   const t = today();
-  if (S.day.d !== t) S.day = { d:t, n:0, newN:0 };
-  S.day.n++;
-  if (!was) S.day.newN = (S.day.newN||0) + 1;
+  if (myDay().d !== t) S['day'+sfx()] = { d:t, n:0, newN:0 };
+  const day = myDay();
+  day.n++;
+  if (!was) day.newN = (day.newN||0) + 1;
   if (S.streak.last !== t){
     S.streak.n = S.streak.last === ymd(new Date(Date.now()-DAY)) ? S.streak.n + 1 : 1;
     S.streak.last = t;
@@ -1067,13 +1751,14 @@ function grade(card, q){          // q: 0 bilmiyorum · 1 zor · 2 biliyorum
 let voice = null;
 function pickVoice(){
   const vs = speechSynthesis.getVoices();
-  voice = vs.find(v => /^nb/i.test(v.lang)) || vs.find(v => /^no/i.test(v.lang)) || vs.find(v => /^nn/i.test(v.lang)) || null;
+  const re = LG().tts, all = vs.filter(v => re.test(v.lang));
+  voice = all.find(v => /^nb/i.test(v.lang)) || all[0] || null;
 }
 if ('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 function speak(text){
   if (!('speechSynthesis' in window)) return;
   const u = new SpeechSynthesisUtterance(text.replace(/\.\.\./g,'').replace(/\(.*?\)/g,'').replace(/\//g,','));
-  u.lang = voice ? voice.lang : 'nb-NO'; if (voice) u.voice = voice; u.rate = .9;
+  u.lang = voice ? voice.lang : LG().ttsLang; if (voice) u.voice = voice; u.rate = .9;
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
 
@@ -1091,8 +1776,19 @@ function lev(a, b){
   for (let i=1;i<=m;i++){ const cur=[i]; for (let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
   return prev[n];
 }
+/* rusça: kiril ya da latin harfle yazılabilir; ё = е */
+const ruKey = s => translit(s.replace(/ё/g,'е')).toLowerCase().replace(/shch|sch/g,'sh').replace(/kh/g,'h').replace(/ts/g,'c').replace(/[yj]/g,'i').replace(/'/g,'').replace(/(.)\1/g,'$1');
 function check(input, answer, isTr){       // 'good' | 'near' | 'wrong'
   const inp = norm(input, isTr); if (!inp) return 'wrong';
+  if (!isTr && S.lang === 'ru'){
+    let best = 'wrong';
+    for (const a of answer.split('/').map(a => norm(a, false)).filter(Boolean)){
+      const f = ruKey(a), i = ruKey(inp);
+      if (i === f) return 'good';
+      if (f.length > 3 && lev(i, f) <= (f.length > 8 ? 2 : 1)) best = 'near';
+    }
+    return best;
+  }
   const alts = answer.split('/').map(a => norm(a, isTr)).filter(Boolean);
   let best = 'wrong';
   for (const a of alts){
@@ -1133,12 +1829,12 @@ function renderHome(){
   $('#qDailySub').textContent = all.due + nNew
     ? `${all.due} tekrar · ${nNew} yeni kelime`
     : 'Bugünlük hepsi tamam ✓ Yarın yeni kartlar gelecek';
-  $('#grid').innerHTML = ALLCATS.map(c => {
+  $('#grid').innerHTML = allCats().map(c => {
     const k = counts(cardsOf(c));
     return `<button class="cat ${c.custom?'custom':''}" data-cat="${c.id}">
       ${k.due ? `<span class="due">${k.due} tekrar</span>` : ''}
       <span class="ic">${c.icon}</span>
-      <span class="cn" lang="nb">${c.no}</span>
+      <span class="cn" lang="${LG().hl}">${c.no}</span>
       <span class="ct">${c.tr}</span>
       ${bar3(k)}
       <span class="cm"><span>${k.ok}/${k.n} öğrenildi</span><span>${k.new ? k.new+' yeni' : k.n ? '✓' : 'boş'}</span></span>
@@ -1152,7 +1848,7 @@ function openCat(id){
   $('#sheet').innerHTML = `
     <button class="ibtn x" data-close>✕</button>
     <div class="ic">${c.icon}</div>
-    <h3 lang="nb">${c.no}</h3>
+    <h3 lang="${LG().hl}">${c.no}</h3>
     <p class="ct">${c.tr}</p>
     ${bar3(k)}
     <p class="cm"><span style="color:var(--hud)">${k.ok} öğrenildi</span><span style="color:var(--mid)">${k.mid} öğreniliyor</span><span>${k.new} yeni</span>${k.due?`<span style="color:var(--sig)">${k.due} tekrar bekliyor</span>`:''}</p>
@@ -1201,7 +1897,7 @@ function start(scope, mode){
   sess = { scope, mode, q, total:q.length, done:0, ok:0, bad:0, missed:new Map(), first:new Set(), title };
   view = 'study';
   $('#sTitle').textContent = title;
-  $('#sTitle').lang = scope === 'daily' || scope === 'mix' ? 'tr' : 'nb';
+  $('#sTitle').lang = scope === 'daily' || scope === 'mix' ? 'tr' : LG().hl;
   $('#sMode').textContent = MODE_TR[mode];
   $('#sProgW').hidden = false;
   show('study');
@@ -1241,9 +1937,9 @@ function sayBtn(c){ return `<button class="say" data-say="${esc(c.no)}" title="S
 function renderCard(c){
   const front = c.rev
     ? `<span class="lang">Türkçe</span><span class="st">${STAT_TR[status(c.id)]}</span><div class="${longCls(c.tr)}">${esc(c.tr)}</div>`
-    : `<span class="lang">Norsk</span><span class="st">${STAT_TR[status(c.id)]}</span><div class="${longCls(c.no)}">${esc(c.no)}</div>${sayBtn(c)}`;
+    : `<span class="lang">${LG().label}</span><span class="st">${STAT_TR[status(c.id)]}</span><div class="${longCls(c.no)}">${esc(c.no)}</div>${pron(c.no)}${sayBtn(c)}`;
   const back = c.rev
-    ? `<span class="lang">Norsk</span><div class="${longCls(c.no)}">${esc(c.no)}</div>${c.hint?`<div class="hint">${esc(c.hint)}</div>`:''}${sayBtn(c)}`
+    ? `<span class="lang">${LG().label}</span><div class="${longCls(c.no)}">${esc(c.no)}</div>${pron(c.no)}${c.hint?`<div class="hint">${esc(c.hint)}</div>`:''}${sayBtn(c)}`
     : `<span class="lang">Türkçe</span><div class="${longCls(c.tr)}">${esc(c.tr)}</div>${c.hint?`<div class="hint">${esc(c.hint)}</div>`:''}`;
   $('#stage').innerHTML = `
     <div class="scene"><div class="flip" id="flip">
@@ -1276,9 +1972,9 @@ function renderQuiz(c){
   const opts = shuffle([right, ...[...new Set(others)].slice(0, 3)]);
   $('#stage').innerHTML = `
     <div class="qbox">
-      <span class="lang">${c.rev ? 'Türkçe' : 'Norsk'}</span>
+      <span class="lang">${c.rev ? 'Türkçe' : LG().label}</span>
       <div class="${longCls(prompt(c))}">${esc(prompt(c))}</div>
-      ${c.rev ? '' : sayBtn(c)}
+      ${c.rev ? '' : pron(c.no) + sayBtn(c)}
     </div>
     <div class="opts" id="opts">${opts.map((o,i) => `<button class="opt" data-o="${esc(o)}"><kbd>${i+1}</kbd><span>${esc(o)}</span></button>`).join('')}</div>
     <div class="verdict" id="verdict"></div>`;
@@ -1303,15 +1999,15 @@ function renderType(c){
   const toNo = c.rev;
   $('#stage').innerHTML = `
     <div class="qbox">
-      <span class="lang">${toNo ? 'Türkçe → norsk yaz' : 'Norsk → türkçe yaz'}</span>
+      <span class="lang">${toNo ? `Türkçe → ${LG().label} yaz` : `${LG().label} → türkçe yaz`}</span>
       <div class="${longCls(prompt(c))}">${esc(prompt(c))}</div>
-      ${toNo ? '' : sayBtn(c)}
+      ${toNo ? '' : pron(c.no) + sayBtn(c)}
     </div>
     <form class="tin" id="tform" autocomplete="off">
-      <input id="tinp" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${toNo ? 'norsk…' : 'türkçe…'}" />
+      <input id="tinp" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${toNo ? (S.lang === 'ru' ? 'русский / latin harfle…' : LG().label.toLowerCase() + '…') : 'türkçe…'}" />
       <button class="btn sig" type="submit">Kontrol</button>
     </form>
-    ${toNo ? `<div class="chars"><button type="button" data-ch="æ">æ</button><button type="button" data-ch="ø">ø</button><button type="button" data-ch="å">å</button></div>` : ''}
+    ${toNo && LG().chars.length ? `<div class="chars">${LG().chars.map(ch => `<button type="button" data-ch="${ch}">${ch}</button>`).join('')}</div>` : ''}
     <div class="verdict" id="verdict"></div>
     <div class="row" id="trow"><button class="btn" id="giveUp" type="button">Bilmiyorum</button></div>`;
   sess.checked = false;
@@ -1328,7 +2024,7 @@ function submitType(giveUp){
   speak(c.no);
   const hint = c.hint ? `<div class="hint">${esc(c.hint)}</div>` : '';
   $('#verdict').innerHTML =
-      res === 'good' ? `<b class="g">Doğru!</b> <span class="ans">${esc(reply(c))}</span>${hint}`
+      res === 'good' ? `<b class="g">Doğru!</b> <span class="ans">${esc(reply(c))}</span>${c.rev ? pron(c.no) : ''}${hint}`
     : res === 'near' ? `<b class="n">Neredeyse</b> — doğrusu: <span class="ans">${esc(reply(c))}</span>${hint}`
     : `<b class="w">${giveUp ? 'Cevap' : 'Yanlış'}</b> — <span class="ans">${esc(reply(c))}</span>${hint}`;
   $('#trow').innerHTML = `<button class="btn sig" id="tnext" type="button">Devam ↵</button>`;
@@ -1339,11 +2035,11 @@ function finish(){
   hud();
   const missed = [...sess.missed.values()];
   const pct = sess.total ? Math.round(sess.ok / sess.total * 100) : 0;
-  const msg = pct >= 90 ? 'Fantastisk! 🎉' : pct >= 70 ? 'Bra jobba! 💪' : pct >= 40 ? 'Godt i gang 👍' : 'Øvelse gjør mester 🔁';
+  const M = LG().msgs, msg = pct >= 90 ? M[0] : pct >= 70 ? M[1] : pct >= 40 ? M[2] : M[3];
   $('#stage').innerHTML = `
     <div class="done">
       <p class="stag" style="justify-content:center">Oturum bitti</p>
-      <h2 class="h1" lang="nb" style="font-size:clamp(1.8rem,5vw,2.8rem)">${msg}</h2>
+      <h2 class="h1" lang="${LG().hl}" style="font-size:clamp(1.8rem,5vw,2.8rem)">${msg}</h2>
       <div class="big">
         <div><b style="color:var(--ok)">${sess.ok}</b><span>İlk seferde</span></div>
         <div><b style="color:var(--bad)">${sess.bad}</b><span>Zorlandın</span></div>
@@ -1362,7 +2058,7 @@ function finish(){
 function renderList(id){
   const c = catById(id); sess = null; view = 'list';
   $('#sTitle').textContent = `${c.icon} ${c.no}`;
-  $('#sTitle').lang = 'nb';
+  $('#sTitle').lang = LG().hl;
   $('#sMode').textContent = `${c.tr} · ${wordsOf(c).length} kelime`;
   $('#sProgW').hidden = true; $('#sCnt').innerHTML = '';
   const cards = cardsOf(c);
@@ -1370,7 +2066,7 @@ function renderList(id){
   $('#stage').style.maxWidth = '820px';
   $('#stage').innerHTML = `
     ${c.custom ? `<form class="add" id="addForm" autocomplete="off">
-      <input name="no" placeholder="norsk (ör. en katt)" required />
+      <input name="no" placeholder="${LG().ph}" required />
       <input name="tr" placeholder="türkçe (ör. kedi)" required />
       <input name="hint" placeholder="ipucu (opsiyonel)" />
       <button class="btn sig" type="submit">Ekle</button>
@@ -1378,7 +2074,7 @@ function renderList(id){
     <div class="list">${cards.length ? cards.map((k,i) => `
       <div class="li">
         <span class="d ${dot(status(k.id))}"></span>
-        <span class="n">${esc(k.no)}${k.hint?`<small>${esc(k.hint)}</small>`:''}</span>
+        <span class="n">${esc(k.no)}${pron(k.no)}${k.hint?`<small>${esc(k.hint)}</small>`:''}</span>
         <span class="t">${esc(k.tr)}</span>
         <span class="a"><button data-say="${esc(k.no)}" title="Seslendir">🔊</button>${c.custom?`<button class="del" data-del="${i}" title="Sil">✕</button>`:''}</span>
       </div>`).join('') : `<div class="empty">Henüz kelime yok. Yukarıdan ilk kelimeni ekle ✍️</div>`}
@@ -1386,7 +2082,7 @@ function renderList(id){
     ${cards.length ? `<div class="row" style="margin-top:1.4rem"><button class="btn sig" data-start="${id}" data-m="card">🃏 Kartlarla çalış</button><button class="btn" data-start="${id}" data-m="quiz">🎯 Test</button><button class="btn" data-start="${id}" data-m="type">⌨️ Yaz</button></div>` : ''}`;
   show('study');
   $('#stage').dataset.list = id;
-  if (c.custom) setTimeout(() => $('#addForm input').focus(), 30);
+  if (c.custom) setTimeout(() => $('#addForm input')?.focus(), 30);
 }
 
 /* ════════ events ════════ */
@@ -1404,18 +2100,29 @@ $('#modal').addEventListener('click', e => {
 });
 
 function syncTools(){
-  document.querySelectorAll('#dirSeg button').forEach(b => b.classList.toggle('on', b.dataset.d === S.dir));
+  const L = LG();
+  document.title = L.title;
+  $('#brandName').innerHTML = L.brand;
+  $('#heroTag').textContent = L.tag;
+  $('#heroH1').innerHTML = L.hero; $('#heroH1').lang = L.hl;
+  const dl = { no:`${L.code}→TR`, tr:`TR→${L.code}`, mix:'MIX' };
+  document.querySelectorAll('#dirSeg button').forEach(b => { b.textContent = dl[b.dataset.d]; b.classList.toggle('on', b.dataset.d === S.dir); });
+  document.querySelectorAll('#langSeg button').forEach(b => b.classList.toggle('on', b.dataset.l === S.lang));
   $('#autoSay').classList.toggle('on', !!S.auto);
 }
 $('#dirSeg').addEventListener('click', e => {
   const b = e.target.closest('[data-d]'); if (!b) return;
   S.dir = b.dataset.d; save(); syncTools();
-  toast(S.dir === 'no' ? 'Norveççe → Türkçe' : S.dir === 'tr' ? 'Türkçe → Norveççe' : 'Karışık yön');
+  toast(S.dir === 'no' ? `${LG().trName} → Türkçe` : S.dir === 'tr' ? `Türkçe → ${LG().trName}` : 'Karışık yön');
+});
+$('#langSeg').addEventListener('click', e => {
+  const b = e.target.closest('[data-l]'); if (!b || b.dataset.l === S.lang) return;
+  setLang(b.dataset.l); goBack(); toast(`${LG().trName} seçildi`);
 });
 $('#autoSay').addEventListener('click', () => {
   S.auto = !S.auto; save(); syncTools();
   toast(S.auto ? 'Otomatik seslendirme açık' : 'Otomatik seslendirme kapalı');
-  if (S.auto && !voice) setTimeout(() => toast('Not: tarayıcında Norveççe ses bulunamadı'), 2300);
+  if (S.auto && !voice) setTimeout(() => toast(`Not: tarayıcında ${LG().trName} ses bulunamadı`), 2300);
 });
 
 $('#stage').addEventListener('click', e => {
@@ -1433,9 +2140,9 @@ $('#stage').addEventListener('click', e => {
   const st = t.closest('[data-start]'); if (st){ $('#stage').style.maxWidth = ''; return start(st.dataset.start, st.dataset.m); }
   const del = t.closest('[data-del]');
   if (del){
-    const w = S.custom[+del.dataset.del]; if (!w) return;
+    const w = myWords()[+del.dataset.del]; if (!w) return;
     if (!confirm(`"${w.no}" silinsin mi?`)) return;
-    S.custom.splice(+del.dataset.del, 1); delete S.p['custom|'+w.no]; save(); renderList('custom');
+    myWords().splice(+del.dataset.del, 1); delete S.p[LG().prefix+'custom|'+w.no]; save(); renderList('custom');
   }
 });
 $('#stage').addEventListener('submit', e => {
@@ -1444,8 +2151,8 @@ $('#stage').addEventListener('submit', e => {
   if (e.target.id === 'addForm'){
     const f = new FormData(e.target), no = f.get('no').trim(), tr = f.get('tr').trim(), hint = f.get('hint').trim();
     if (!no || !tr) return;
-    if (S.custom.some(w => w.no === no)) return toast('Bu kelime zaten var');
-    S.custom.unshift({ no: no.replace(/\|/g,'/'), tr, hint }); save(); renderList('custom'); toast(`"${no}" eklendi`);
+    if (myWords().some(w => w.no === no)) return toast('Bu kelime zaten var');
+    myWords().unshift({ no: no.replace(/\|/g,'/'), tr, hint }); save(); renderList('custom'); toast(`"${no}" eklendi`);
   }
 });
 
@@ -1476,7 +2183,7 @@ document.addEventListener('keydown', e => {
 /* backup */
 $('#bExport').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(S, null, 1)], { type:'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `norsk-ord-${today()}.json`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `flashkart-${today()}.json`;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 });
 $('#bImport').addEventListener('click', () => $('#fImport').click());
@@ -1490,10 +2197,13 @@ $('#fImport').addEventListener('change', async e => {
   e.target.value = '';
 });
 $('#bReset').addEventListener('click', () => {
-  if (!confirm('Tüm ilerleme silinsin mi? (Kendi kelimelerin kalır)')) return;
-  const keep = S.custom; S = fresh(); S.custom = keep; save(); syncTools(); renderHome(); toast('İlerleme sıfırlandı');
+  if (!confirm('Tüm ilerleme silinsin mi? (İki dil için de. Kendi kelimelerin kalır)')) return;
+  const keep = { custom:S.custom, custom_ru:S.custom_ru, lang:S.lang }; S = Object.assign(fresh(), keep); save(); syncTools(); renderHome(); toast('İlerleme sıfırlandı');
 });
 
+function setLang(l){ if (!LANGS[l]) return; S.lang = l; save(); if ('speechSynthesis' in window) pickVoice(); syncTools(); }
+const qLang = new URLSearchParams(location.search).get('lang');
+if (qLang && LANGS[qLang]) setLang(qLang);
 syncTools();
 renderHome();
 </script>
